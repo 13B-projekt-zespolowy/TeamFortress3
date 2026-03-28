@@ -1,18 +1,16 @@
-using System;
+using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-enum MovementType {
-  Walking,
-  Sprinting,
-  Crouching // Not implemented
+enum MovementType { 
+    Walking, 
+    Sprinting, 
+    Crouching // Not implemented
 }
 
-
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(CharacterController))]
+public class PlayerController : NetworkBehaviour
 {
-
     [SerializeField] private float cameraSensitivity = 20.0f;
 
     [SerializeField] private float walkSpeed = 3.0f;
@@ -41,14 +39,14 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private InputAction sprintAction;
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        playerCamera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
+        playerCamera = transform.Find("PlayerCamera").GetComponent<Camera>();
         controller = GetComponent<CharacterController>();
+    }
 
+    private void Start()
+    {
         lookAction = InputSystem.actions.FindAction("Look");
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -62,6 +60,16 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    protected override void OnSpawned()
+    {
+        enabled = isOwner;
+
+        if (!isOwner)
+        {
+            Destroy(playerCamera.gameObject);
+        }
+    }
+
     private void OnJumpActionPerformed(InputAction.CallbackContext context)
     {
         if (!controller.isGrounded)
@@ -70,8 +78,6 @@ public class PlayerController : MonoBehaviour
         }
         jumpVelocity = Vector3.up * jumpForce;
     }
-
-
 
     void MouseLook() 
     {
@@ -84,11 +90,7 @@ public class PlayerController : MonoBehaviour
 
     void Motion() 
     {
-
-
         movementType =  MovementType.Walking;
-
-
         walkMotion = Vector3.zero;
 
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
@@ -109,8 +111,6 @@ public class PlayerController : MonoBehaviour
         controller.Move((walkMotion * movementSpeed + jumpVelocity)* Time.deltaTime);
     }
 
-
-
     void Update()
     {
         MouseLook();
@@ -119,8 +119,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void UpdateCameraFov()
-    {
-      targetCameraFov = baseCameraFov * (movementType == MovementType.Sprinting  && walkMotion.magnitude > 0 ? 1.25f : 1f);
-      playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetCameraFov, Time.deltaTime * 4.0f);
+    { 
+        targetCameraFov = baseCameraFov * (movementType == MovementType.Sprinting  && walkMotion.magnitude > 0 ? 1.25f : 1f); 
+        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetCameraFov, Time.deltaTime * 4.0f);
     }
 }
