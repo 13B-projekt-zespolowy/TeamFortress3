@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21954c62248d4a746aa4f1ca8e3cf8f2, type: 3}
+  m_Name: Test Pistol
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponInfo
+  fireType: 0
+  shootMode: 1
+  magazineSize: 5
+  initialReserve: 90
+  fireRate: 10
+  damage: 20
+  range: 100
+  projectilePrefab: {fileID: 5447330612635458532, guid: 2f3440d1f9c18c249a2a363e79bf6d60, type: 3}
