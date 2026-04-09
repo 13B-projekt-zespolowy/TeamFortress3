@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/PlayerTestScene.unity
+    guid: 062624ebb64992023a50341b65eb34a5
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: f17ad34165d180444ba58308f808c96b
+  - enabled: 1
+    path: Assets/Scenes/ProstaMapa_Sprint1.unity
+    guid: f9832442a16f6f344b4870e68758e5b1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
