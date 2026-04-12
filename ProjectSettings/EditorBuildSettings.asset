@@ -17,6 +17,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProstaMapa_Sprint1.unity
     guid: f9832442a16f6f344b4870e68758e5b1
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: c937ca94bbd41aa4183da83e55f7b1bb
+  - enabled: 1
+    path: Assets/Scenes/LobbyTestScene.unity
+    guid: eebe004d64ccad0459f21401af0b6851
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Zamykam grê!");
 
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
 #else        
         Application.Quit();
 #endif
