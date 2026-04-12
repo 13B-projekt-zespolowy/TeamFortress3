@@ -11,6 +11,8 @@ public class GameTimer : MonoBehaviour
     [Header("UI Element")]
     [SerializeField] private TextMeshProUGUI timerText;
 
+    [SerializeField] private ModeManager modeManager;
+
     public UnityEvent OnTimerEnd;
 
     private void Start()
@@ -34,12 +36,21 @@ public class GameTimer : MonoBehaviour
         else
         {
             timeRemaining = 0;
-            timerIsRunning = false;
+            StopTimer();
             DisplayTime(timeRemaining);
-            OnTimerEnd.Invoke();
+            modeManager.EndDraw();
         }
     }
 
+    public void AddTime(float time)
+    {
+        timeRemaining += time;
+    }
+
+    public void StopTimer()
+    {
+        timerIsRunning = false;
+    }
     private void DisplayTime(float timeToDisplay)
     {
         if(timeRemaining < 10f)
