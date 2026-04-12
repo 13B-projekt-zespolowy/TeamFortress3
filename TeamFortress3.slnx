@@ -3,8 +3,8 @@
   <Project Path="PurrNetLobbySetup.csproj" />
   <Project Path="PurrNet.Editor.csproj" />
   <Project Path="Unity.PurrNet.Codegen.csproj" />
-  <Project Path="LiteNetLib.csproj" />
   <Project Path="SimpleWebTransport.csproj" />
+  <Project Path="LiteNetLib.csproj" />
   <Project Path="PurrNet.Edgegap.Runtime.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="PurrNet.UTP.Runtime.csproj" />
