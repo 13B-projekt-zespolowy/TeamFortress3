@@ -61,7 +61,7 @@ public class PlayerShooter : NetworkBehaviour
         if (reloadAction.action.WasPressedThisFrame())
             TryReload();
 
-        Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
+        //Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
     }
 
     public void TryShoot()
