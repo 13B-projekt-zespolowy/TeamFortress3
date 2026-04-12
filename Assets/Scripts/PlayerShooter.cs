@@ -61,7 +61,6 @@ public class PlayerShooter : NetworkBehaviour
         if (reloadAction.action.WasPressedThisFrame())
             TryReload();
 
-        Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
     }
 
     public void TryShoot()
@@ -75,7 +74,19 @@ public class PlayerShooter : NetworkBehaviour
         }
 
         _nextFireTime = Time.time + (1f / weapon.fireRate);
+        Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
         ShootServerRPC((weapon.shootMode == WeaponInfo.ShootMode.Hitscan) ? playerCamera.position : firePoint.position, playerCamera.forward);
+    }
+    
+    public void AddAmmo(int amount)
+    {
+        AddAmmoRPC(amount);
+    }
+
+    [ServerRpc]
+    private void AddAmmoRPC(int amount)
+    {
+        _currentReserve.value += amount;
     }
 
     private void TryReload()
