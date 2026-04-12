@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class TestContactInteractable : ContactInteractable
 {
-    public override void OnInteractedWith()
+    public override InteractionResultAction OnInteractedWith(GameObject sender)
     {
         Debug.Log("Interaction!");
+        return InteractionResultAction.None;
     }
 }

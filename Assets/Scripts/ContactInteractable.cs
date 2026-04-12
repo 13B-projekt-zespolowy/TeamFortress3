@@ -3,24 +3,23 @@ using UnityEngine;
 
 public abstract class ContactInteractable : NetworkBehaviour
 {
-    public enum OnEndInteractAction
+    public enum InteractionResultAction
     {
         None,
         Destroy
     }
-    public OnEndInteractAction onEndInteractAction; 
     
-    public abstract void OnInteractedWith();
+    public abstract InteractionResultAction OnInteractedWith(GameObject sender);
 
     [ServerRpc]
-    public void HandleInteraction()
+    public void HandleInteraction(GameObject sender)
     {
-        OnInteractedWith();
-        switch(onEndInteractAction)
+        var action = OnInteractedWith(sender);
+        switch(action)
         {
-            case OnEndInteractAction.None:
+            case InteractionResultAction.None:
                 return;
-            case OnEndInteractAction.Destroy:
+            case InteractionResultAction.Destroy:
                 Destroy(gameObject);
                 return;
         }
