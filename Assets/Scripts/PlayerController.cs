@@ -1,32 +1,32 @@
+using System;
 using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-enum MovementType { 
-    Walking, 
-    Sprinting, 
-    Crouching // Not implemented
+enum MovementType
+{
+    Walking,
+    Crouching
 }
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private float cameraSensitivity = 20.0f;
+    [SerializeField] private float walkSpeed = 5.0f;
+    [SerializeField] private float crouchSpeed = 2.5f;
+    [SerializeField] private float jumpForceVertical = 10.0f;
+    [SerializeField] private float jumpForceHorizontal = 1.0f;
+    [SerializeField] private Vector3 gravity = Vector3.up * -40.0f;
 
-    [SerializeField] private float walkSpeed = 3.0f;
-    [SerializeField] private float runSpeed = 6.0f;
-
-    [SerializeField] private float jumpForce = 20.0f;
-    
-    [SerializeField] private Vector3 gravity = Vector3.up * -80.0f;
-
+    [SerializeField] private float baseCameraHeight = 0.5f; 
+    [SerializeField] private float crouchCameraHeight = 0f; 
+    private Vector2 moveInput = Vector2.zero;
+    private float cameraHeight;
 
     private MovementType movementType = MovementType.Walking;
 
-
-    private float baseCameraFov;
-    private float targetCameraFov;
-
+    private bool crouchPressed = false;
     private float rotationX = 0.0f;
     private Vector3 jumpVelocity = Vector3.zero;
     private Vector3 walkMotion = Vector3.zero;
@@ -37,7 +37,7 @@ public class PlayerController : NetworkBehaviour
     private InputAction lookAction;
     private InputAction moveAction;
     private InputAction jumpAction;
-    private InputAction sprintAction;
+    private InputAction crouchAction;
 
     private void Awake()
     {
@@ -50,14 +50,30 @@ public class PlayerController : NetworkBehaviour
         lookAction = InputSystem.actions.FindAction("Look");
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
-        sprintAction = InputSystem.actions.FindAction("Sprint");
-        
+        crouchAction = InputSystem.actions.FindAction("Crouch");
+
         jumpAction.performed += OnJumpActionPerformed;
 
-        baseCameraFov = playerCamera.fieldOfView;
+        crouchAction.performed += _ => StartCrouching();
+        crouchAction.canceled += _ => StopCrouching();
+
+        cameraHeight = baseCameraHeight;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    private void StartCrouching()
+    {
+        crouchPressed = true;
+        controller.height = 1;
+        controller.center = new Vector3(0, -0.5f, 0);
+    }
+    private void StopCrouching()
+    {
+        crouchPressed = false;
+        controller.height = 2;
+        controller.center = new Vector3(0, 0, 0);
     }
 
     protected override void OnSpawned()
@@ -76,10 +92,14 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        jumpVelocity = Vector3.up * jumpForce;
+
+        jumpVelocity = 
+        jumpForceVertical * Vector3.up + 
+        jumpForceHorizontal * moveInput.y * transform.forward + 
+        jumpForceHorizontal * moveInput.x * transform.right;
     }
 
-    void MouseLook() 
+    void MouseLook()
     {
         Vector2 lookDelta = lookAction.ReadValue<Vector2>();
         rotationX -= lookDelta.y * cameraSensitivity * Time.deltaTime;
@@ -88,39 +108,39 @@ public class PlayerController : NetworkBehaviour
         playerCamera.transform.localEulerAngles = Vector3.right * rotationX;
     }
 
-    void Motion() 
+    void Motion()
     {
-        movementType =  MovementType.Walking;
+        movementType = crouchPressed ? MovementType.Crouching : MovementType.Walking;
         walkMotion = Vector3.zero;
-
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
-
-        if (moveInput.y > 0 && sprintAction.IsPressed())
-        {
-          movementType = MovementType.Sprinting;
-        }
-
+        moveInput = Vector2.zero;
+        moveInput = moveAction.ReadValue<Vector2>();
         walkMotion += transform.right * moveInput.x;
         walkMotion += transform.forward * moveInput.y;
         walkMotion.Normalize();
-
         jumpVelocity += gravity * Time.deltaTime;
-
-        float movementSpeed = movementType == MovementType.Sprinting ? runSpeed : walkSpeed;
-
-        controller.Move((walkMotion * movementSpeed + jumpVelocity)* Time.deltaTime);
+        float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
+        controller.Move((walkMotion * movementSpeed + jumpVelocity) * Time.deltaTime);
+        
+        if (controller.isGrounded)
+        {
+            jumpVelocity.x = 0;
+            jumpVelocity.z = 0;
+        }
     }
 
     void Update()
     {
+        UpdateCameraHeight();
         MouseLook();
         Motion();
-        UpdateCameraFov();
     }
 
-    private void UpdateCameraFov()
-    { 
-        targetCameraFov = baseCameraFov * (movementType == MovementType.Sprinting  && walkMotion.magnitude > 0 ? 1.25f : 1f); 
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetCameraFov, Time.deltaTime * 4.0f);
+    private void UpdateCameraHeight()
+    {
+        float targetCameraHeight = movementType == MovementType.Crouching ? crouchCameraHeight : baseCameraHeight;
+        Vector3 cameraPos = playerCamera.transform.localPosition;
+        cameraHeight = Mathf.Lerp(cameraHeight, targetCameraHeight, Time.deltaTime * 2.0f);
+        cameraPos.y = cameraHeight;
+        playerCamera.transform.localPosition = cameraPos;
     }
 }
