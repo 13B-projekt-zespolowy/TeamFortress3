@@ -2407,16 +2407,16 @@ MonoBehaviour:
     maxPlayers: 5
     roomProperties:
       keys:
-      - PurrNet
+      - TF3
       values:
-      - IsTheBest
+      - TF3
       stringKeys: []
       stringValues: []
   searchRoomArgs:
     keys:
-    - PurrNet
+    - TF3
     values:
-    - IsTheBest
+    - TF3
     stringKeys: []
     stringValues: []
   OnRoomJoined:
@@ -2561,7 +2561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyManager: {fileID: 1097043115}
-  nextScene: LobbyTestScene
+  nextScene: MpTestScene
   subscribeToOnAllReady: 1
 --- !u!1 &1101296062
 GameObject:
