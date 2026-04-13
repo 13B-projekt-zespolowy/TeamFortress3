@@ -17,7 +17,7 @@ public class WeaponInfo : ScriptableObject
 
     [Header("Shooting")]
     public float fireRate = 10f;
-    public float damage = 20f;
+    public int damage = 20;
     public float range = 100f;
     //public float spread = 0.01f; //TO DO
 

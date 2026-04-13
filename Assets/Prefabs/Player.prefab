@@ -399,6 +399,7 @@ GameObject:
   - component: {fileID: 4877317801038814262}
   - component: {fileID: 721276400531238361}
   - component: {fileID: 5448184715659673881}
+  - component: {fileID: 8225231554379536593}
   - component: {fileID: 8354818212045979342}
   - component: {fileID: 3369302211846565387}
   m_Layer: 3
@@ -667,3 +668,28 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
+--- !u!114 &8225231554379536593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8958957543670348631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fada1ad2140ea9e4697cfef47154a199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  currentHealth:
+    _value: 0
+    _ownerAuth: 0
+    _sendIntervalInSeconds: 0
