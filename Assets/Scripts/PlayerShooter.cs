@@ -105,14 +105,21 @@ public class PlayerShooter : NetworkBehaviour
     {
         Vector3 endPoint = pos + (forward * weapon.range);
         if (Physics.Raycast(pos, forward, out RaycastHit hit, weapon.range, hitMask))
+        {
             endPoint = hit.point;
+            if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(weapon.damage);
+        }
 
         HitscanDebugObserverRPC(pos, endPoint);
     }
 
     private void ShootProjectile(Vector3 pos, Vector3 forward)
     {
-        Instantiate(weapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
+        GameObject proj = Instantiate(weapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
+
+        if (proj.TryGetComponent(out WeaponProjectile projectileScript))
+            projectileScript.Initialize(weapon.damage, GetComponent<Collider>());
     }
 
     private void HandleSway()
