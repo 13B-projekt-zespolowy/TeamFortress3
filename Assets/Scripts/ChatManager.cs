@@ -4,16 +4,16 @@ using UnityEngine.InputSystem;
 
 public class ChatManager : MonoBehaviour
 {
-    public GameObject chatPanel;         
-    public TMP_InputField chatInput;     
-    public GameObject messagePrefab;     
-    public Transform messageArea;        
-    public MonoBehaviour playerMovement; 
+    public GameObject chatPanel;
+    public TMP_InputField chatInput;
+    public GameObject messagePrefab;
+    public Transform messageArea;
+    public PlayerController playerMovement;
 
-    public float showDuration = 4f;      
+    public float showDuration = 4f;
 
-    private float hideTimer = 0f;        
-    private bool isTyping = false;      
+    private float hideTimer = 0f;
+    private bool isTyping = false;
 
     void Start()
     {
@@ -25,10 +25,10 @@ public class ChatManager : MonoBehaviour
     {
         if (!isTyping && chatPanel != null && chatPanel.activeSelf)
         {
-            hideTimer -= Time.deltaTime; 
+            hideTimer -= Time.deltaTime;
             if (hideTimer <= 0f)
             {
-                chatPanel.SetActive(false); 
+                chatPanel.SetActive(false);
             }
         }
 
@@ -43,6 +43,11 @@ public class ChatManager : MonoBehaviour
             {
                 SendMessageToChat();
             }
+
+            if (isTyping && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                CancelChat();
+            }
         }
     }
 
@@ -53,9 +58,9 @@ public class ChatManager : MonoBehaviour
         chatInput.gameObject.SetActive(true);
         chatInput.ActivateInputField();
 
-        if (playerMovement != null) playerMovement.enabled = false;
+        if (playerMovement != null) playerMovement.canMove = false;
 
-        Cursor.lockState = CursorLockMode.None; 
+        Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
@@ -66,7 +71,6 @@ public class ChatManager : MonoBehaviour
             GameObject newMessage = Instantiate(messagePrefab, messageArea);
             TextMeshProUGUI textComponent = newMessage.GetComponent<TextMeshProUGUI>();
             textComponent.text = "<b><color=red>Player1</color>:</b> " + chatInput.text;
-
             ShowChatTemporarily();
         }
         else
@@ -74,19 +78,30 @@ public class ChatManager : MonoBehaviour
             ShowChatTemporarily();
         }
 
+        CloseChatUI();
+    }
+
+    private void CancelChat()
+    {
+        ShowChatTemporarily();
+        CloseChatUI();
+    }
+
+    private void CloseChatUI()
+    {
         isTyping = false;
         chatInput.text = "";
         chatInput.gameObject.SetActive(false);
 
-        if (playerMovement != null) playerMovement.enabled = true;
+        if (playerMovement != null) playerMovement.canMove = true;
 
-        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     public void ShowChatTemporarily()
     {
         chatPanel.SetActive(true);
-        hideTimer = showDuration; 
+        hideTimer = showDuration;
     }
 }

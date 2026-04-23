@@ -61,7 +61,6 @@ public class PlayerShooter : NetworkBehaviour
         if (reloadAction.action.WasPressedThisFrame())
             TryReload();
 
-        Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
     }
 
     public void TryShoot()
@@ -75,7 +74,19 @@ public class PlayerShooter : NetworkBehaviour
         }
 
         _nextFireTime = Time.time + (1f / weapon.fireRate);
+        Debug.Log($"Magazine: {_currentMag.value} | Reserve: {_currentReserve.value}");
         ShootServerRPC((weapon.shootMode == WeaponInfo.ShootMode.Hitscan) ? playerCamera.position : firePoint.position, playerCamera.forward);
+    }
+    
+    public void AddAmmo(int amount)
+    {
+        AddAmmoRPC(amount);
+    }
+
+    [ServerRpc]
+    private void AddAmmoRPC(int amount)
+    {
+        _currentReserve.value += amount;
     }
 
     private void TryReload()
@@ -94,14 +105,21 @@ public class PlayerShooter : NetworkBehaviour
     {
         Vector3 endPoint = pos + (forward * weapon.range);
         if (Physics.Raycast(pos, forward, out RaycastHit hit, weapon.range, hitMask))
+        {
             endPoint = hit.point;
+            if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(weapon.damage);
+        }
 
         HitscanDebugObserverRPC(pos, endPoint);
     }
 
     private void ShootProjectile(Vector3 pos, Vector3 forward)
     {
-        Instantiate(weapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
+        GameObject proj = Instantiate(weapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
+
+        if (proj.TryGetComponent(out WeaponProjectile projectileScript))
+            projectileScript.Initialize(weapon.damage, GetComponent<Collider>());
     }
 
     private void HandleSway()
