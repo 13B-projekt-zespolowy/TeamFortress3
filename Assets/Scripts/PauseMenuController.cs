@@ -6,7 +6,7 @@ public class PauseMenuController : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
     public GameObject settingsPanel;
-    public MonoBehaviour playerMovementScript;
+    public PlayerController playerMovementScript;
 
     private bool isMenuOpen = false;
 
@@ -43,7 +43,7 @@ public class PauseMenuController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (playerMovementScript != null) playerMovementScript.enabled = false;
+        if (playerMovementScript != null) playerMovementScript.canMove = false;
     }
 
     public void ResumeGame()
@@ -54,7 +54,7 @@ public class PauseMenuController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        if (playerMovementScript != null) playerMovementScript.enabled = true;
+        if (playerMovementScript != null) playerMovementScript.canMove = true;
     }
 
     public void OpenSettings()
