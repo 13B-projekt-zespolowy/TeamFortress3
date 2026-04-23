@@ -1,58 +1,63 @@
 using System.Collections;
 using PurrLobby;
 using PurrNet;
-using PurrNet.Logging;
 using PurrNet.Steam;
+using PurrNet.Transports;
+using PurrNet.Utils;
 using Steamworks;
 using UnityEngine;
 
+[RequireComponent(typeof(NetworkManager), typeof(UDPTransport), typeof(SteamTransport))]
 public class ConnectionStarter : MonoBehaviour
 {
+    [Header("These only apply when not connecting through Steam.")]
+    public StartFlags udpServerStartFlags = StartFlags.ServerBuild | StartFlags.Editor;
+    public StartFlags udpClientStartFlags = StartFlags.ClientBuild | StartFlags.Editor | StartFlags.Clone;
+
     private NetworkManager networkManager;
-    private LobbyDataHolder lobbyDataHolder;
+    // We assume that if a lobby data holder was found, we should connect through steam and through UDP otherwise.
+    private LobbyDataHolder lobbyDataHolder; 
+
+    private SteamTransport steamTransport;
+    private UDPTransport udpTransport;
     
     private void Awake()
     {
-        if (!TryGetComponent(out networkManager))
-        {
-            PurrLogger.LogError($"Failed to get {nameof(NetworkManager)} component.", this);
-            return;
-        }
-        
+        networkManager = GetComponent<NetworkManager>();
         lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
 
-        if (!lobbyDataHolder)
-        {
-            PurrLogger.LogError($"Failed to get {nameof(LobbyDataHolder)} component.", this);
-            return;
-        }
+        steamTransport = GetComponent<SteamTransport>();
+        steamTransport.enabled = false;
+        udpTransport = GetComponent<UDPTransport>();
+        udpTransport.enabled = false;
     }
     
     private void Start()
     {
-        if (!networkManager)
-        {
-            PurrLogger.LogError($"Failed to start connection. {nameof(NetworkManager)} is null!", this);
-            return;
-        }
-        
-        if (!lobbyDataHolder)
-        {
-            PurrLogger.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
-            return;
-        }
+        var startServer = false;
+        var startClient = false;
 
-        if (!lobbyDataHolder.CurrentLobby.IsValid)
+        if (lobbyDataHolder)
         {
-            PurrLogger.LogError($"Failed to start connection. Lobby is invalid!", this);
-            return;
-        }
+            // Connect through steam.
 
-        if (networkManager.transport is SteamTransport)
-        {
-            var steamTransport = networkManager.transport as SteamTransport;
+            steamTransport.enabled = true;
+            networkManager.transport = steamTransport;
             steamTransport.peerToPeer = true;
             steamTransport.dedicatedServer = false;
+
+            if (!lobbyDataHolder)
+            {
+                Debug.LogError($"Failed to start connection. {nameof(LobbyDataHolder)} is null!", this);
+                return;
+            }
+
+            if (!lobbyDataHolder.CurrentLobby.IsValid)
+            {
+                Debug.LogError($"Failed to start connection. Lobby is invalid!", this);
+                return;
+            }
+
             if (ulong.TryParse(lobbyDataHolder.CurrentLobby.LobbyId, out var parsedId))
             {
                 var steamLobbyId = new CSteamID(parsedId);
@@ -68,12 +73,26 @@ public class ConnectionStarter : MonoBehaviour
                     steamTransport.address = gameServerSteamID.ToString();
                 }
             }
+
+            startServer = lobbyDataHolder.CurrentLobby.IsOwner;
+            startClient = true;
+        }
+        else
+        {
+            // Connect through UDP.
+
+            udpTransport.enabled = true;
+            networkManager.transport = udpTransport;
+
+            startServer = ShouldStart(udpServerStartFlags);
+            startClient = ShouldStart(udpClientStartFlags);
         }
 
-        if (lobbyDataHolder.CurrentLobby.IsOwner)
+        if (startServer)
             networkManager.StartServer();
 
-        StartCoroutine(StartClient());
+        if (startClient)
+            StartCoroutine(StartClient());
     }
 
     private IEnumerator StartClient()
@@ -81,5 +100,13 @@ public class ConnectionStarter : MonoBehaviour
         // Brief delay to ensure server is fully listening before client connects.
         yield return new WaitForSeconds(1f);
         networkManager.StartClient();
+    }
+
+    private static bool ShouldStart(StartFlags flags)
+    {
+        return (flags.HasFlag(StartFlags.Editor) && ApplicationContext.isMainEditor) ||
+               (flags.HasFlag(StartFlags.Clone) && ApplicationContext.isClone) ||
+               (flags.HasFlag(StartFlags.ClientBuild) && ApplicationContext.isClientBuild) ||
+               (flags.HasFlag(StartFlags.ServerBuild) && ApplicationContext.isServerBuild);
     }
 }

@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5267864835383859823}
+  - component: {fileID: 5893296600191946616}
   - component: {fileID: 2011993296003921488}
   - component: {fileID: 1383948950700713882}
   - component: {fileID: 7374554191131292186}
-  - component: {fileID: 5893296600191946616}
   - component: {fileID: 5717520081224327808}
   m_Layer: 0
   m_Name: Network Manager
@@ -36,6 +36,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5893296600191946616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142415233962541660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f839e8fa7fa5e734f9acdfbe28f9edb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConnectionStarter
+  udpServerStartFlags: 9
+  udpClientStartFlags: 7
 --- !u!114 &2011993296003921488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +101,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2142415233962541660}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ccc454d6a19ac140b15f8d619d0fb5e, type: 3}
   m_Name: 
@@ -96,18 +110,6 @@ MonoBehaviour:
   _dedicatedServer: 0
   _peerToPeer: 1
   _address: 127.0.0.1
---- !u!114 &5893296600191946616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142415233962541660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f839e8fa7fa5e734f9acdfbe28f9edb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ConnectionStarter
 --- !u!114 &5717520081224327808
 MonoBehaviour:
   m_ObjectHideFlags: 0

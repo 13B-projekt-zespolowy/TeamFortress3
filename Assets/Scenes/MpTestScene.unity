@@ -2834,11 +2834,26 @@ PrefabInstance:
       propertyPath: 'spawnPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 1263028142}
+    - target: {fileID: 5893296600191946616, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
+      propertyPath: transport
+      value: 
+      objectReference: {fileID: 2607874336745064461}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
+--- !u!114 &2607874336745064461 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7374554191131292186, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
+  m_PrefabInstance: {fileID: 2607874336745064460}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ccc454d6a19ac140b15f8d619d0fb5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Steam.Runtime::PurrNet.Steam.SteamTransport
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
