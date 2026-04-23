@@ -13,14 +13,16 @@ public class ConnectionStarter : MonoBehaviour
     
     private void Awake()
     {
-        if (!TryGetComponent(out networkManager)) {
+        if (!TryGetComponent(out networkManager))
+        {
             PurrLogger.LogError($"Failed to get {nameof(NetworkManager)} component.", this);
             return;
         }
         
         lobbyDataHolder = FindFirstObjectByType<LobbyDataHolder>();
 
-        if (!lobbyDataHolder) {
+        if (!lobbyDataHolder)
+        {
             PurrLogger.LogError($"Failed to get {nameof(LobbyDataHolder)} component.", this);
             return;
         }
@@ -51,14 +53,14 @@ public class ConnectionStarter : MonoBehaviour
             var steamTransport = networkManager.transport as SteamTransport;
             steamTransport.peerToPeer = true;
             steamTransport.dedicatedServer = false;
-            if (ulong.TryParse(lobbyDataHolder.CurrentLobby.LobbyId, out ulong parsedId))
+            if (ulong.TryParse(lobbyDataHolder.CurrentLobby.LobbyId, out var parsedId))
             {
                 var steamLobbyId = new CSteamID(parsedId);
                 Debug.Log($"Lobby Owner's SteamID: {SteamMatchmaking.GetLobbyOwner(steamLobbyId)}");
                 if (Steamworks.SteamMatchmaking.GetLobbyGameServer(steamLobbyId,
-                                                                   out uint gameServerIP,
-                                                                   out ushort gameServerPort,
-                                                                   out CSteamID gameServerSteamID))
+                                                                   out var gameServerIP,
+                                                                   out var gameServerPort,
+                                                                   out var gameServerSteamID))
                 {
                     Debug.Log($"gameServerIP: {gameServerIP}");
                     Debug.Log($"gameServerPort: {gameServerPort}");
