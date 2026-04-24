@@ -9,7 +9,8 @@ public class PlayerFlag : MonoBehaviour
 
     public void Drop(Vector3 pos)
     {
-        if (carriedFlag == null) return;
+        if (carriedFlag == null)
+            return;
         
         carriedFlag.Drop(pos);
         carriedFlag = null;

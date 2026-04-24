@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 public class ModeManager : MonoBehaviour
 {
-    public static ModeManager Instance;
+    public static ModeManager Instance { get; private set; }
 
     private int redScore;
     private int blueScore;
@@ -20,10 +20,17 @@ public class ModeManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
-    public void Score(Team team)
+    public void IncreaseScore(Team team)
     {
         if (team == Team.Red)
             redScore++;

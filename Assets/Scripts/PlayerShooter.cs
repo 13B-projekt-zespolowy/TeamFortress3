@@ -60,7 +60,6 @@ public class PlayerShooter : NetworkBehaviour
 
         if (reloadAction.action.WasPressedThisFrame())
             TryReload();
-
     }
 
     public void TryShoot()

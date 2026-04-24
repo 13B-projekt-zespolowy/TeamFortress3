@@ -29,8 +29,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference crouchAction;
 
-    [HideInInspector] public bool canMove = true;
-
     private Vector2 moveInput = Vector2.zero;
     private float cameraHeight;
     private MovementType movementType = MovementType.Walking;
@@ -56,14 +54,10 @@ public class PlayerController : NetworkBehaviour
         crouchAction.action.canceled += _ => StopCrouching();
 
         cameraHeight = baseCameraHeight;
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void StartCrouching()
     {
-        if (!canMove) return;
         crouchPressed = true;
         controller.height = 1;
         controller.center = new Vector3(0, -0.5f, 0);
@@ -79,6 +73,7 @@ public class PlayerController : NetworkBehaviour
     protected override void OnSpawned()
     {
         enabled = isOwner;
+
         if (!isOwner && playerCamera != null)
         {
             Destroy(playerCamera.gameObject);
@@ -87,7 +82,8 @@ public class PlayerController : NetworkBehaviour
 
     private void OnJumpActionPerformed(InputAction.CallbackContext context)
     {
-        if (!canMove || !controller.isGrounded) return;
+        if (!controller.isGrounded)
+            return;
 
         jumpVelocity =
             jumpForceVertical * Vector3.up +
@@ -132,31 +128,11 @@ public class PlayerController : NetworkBehaviour
         controller.Move(finalMove * Time.deltaTime);
     }
 
-    void ApplyOnlyGravity()
-    {
-        jumpVelocity += gravity * Time.deltaTime;
-
-        if (controller.isGrounded && jumpVelocity.y < 0)
-        {
-            jumpVelocity.y = -5f;
-        }
-
-        controller.Move(jumpVelocity * Time.deltaTime);
-    }
-
-    void Update()
+    private void Update()
     {
         UpdateCameraHeight();
-
-        if (canMove)
-        {
-            MouseLook();
-            Motion();
-        }
-        else
-        {
-            ApplyOnlyGravity();
-        }
+        MouseLook();
+        Motion();
     }
 
     private void UpdateCameraHeight()

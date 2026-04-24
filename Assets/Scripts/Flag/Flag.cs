@@ -11,7 +11,8 @@ public class Flag : MonoBehaviour
 
     private void Update()
     {
-        if (IsCarried) transform.position = carrier.holdPoint.position;
+        if (IsCarried)
+            transform.position = carrier.holdPoint.position;
     }
 
     public void Pickup(PlayerFlag player)
@@ -47,6 +48,7 @@ public class Flag : MonoBehaviour
             return;
         }
 
-        if (!IsCarried && player.carriedFlag == null) Pickup(player);
+        if (!IsCarried && player.carriedFlag == null)
+            Pickup(player);
     }
 }

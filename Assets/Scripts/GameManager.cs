@@ -65,7 +65,6 @@ public class GameManager : NetworkBehaviour
 
         if (playerObject.TryGetComponent(out PlayerHealth health))
             health.RespawnSnapRpc(spawnPos, spawnRot);
-
     }
 
     public void RemovePlayer(PlayerID player)
