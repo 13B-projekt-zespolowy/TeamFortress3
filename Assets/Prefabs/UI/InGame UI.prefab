@@ -1663,9 +1663,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c7a52421ebe8da4a982323aa4bc98b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreboardController
+  toggleScoreboardAction: {fileID: 5574216912730044565, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   scoreboardPanel: {fileID: 766184574794050928}
   content: {fileID: 3504506497243679233}
-  playerRowPrefab: {fileID: 7749380030515938758}
+  playerRowPrefab: {fileID: 872407921765935876, guid: ccd3d19ae698be34abed87e6cd074ee5, type: 3}
 --- !u!1 &2018155423847683410
 GameObject:
   m_ObjectHideFlags: 0
@@ -7058,10 +7059,5 @@ RectTransform:
 --- !u!224 &3504506497243679233 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9059792002684073695, guid: ab81c12be1e37f8448cbe3392f606dd1, type: 3}
-  m_PrefabInstance: {fileID: 5555289938954206430}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7749380030515938758 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2779581682737625368, guid: ab81c12be1e37f8448cbe3392f606dd1, type: 3}
   m_PrefabInstance: {fileID: 5555289938954206430}
   m_PrefabAsset: {fileID: 0}

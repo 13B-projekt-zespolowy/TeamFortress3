@@ -5,14 +5,17 @@ using TMPro;
 
 public class ScoreboardController : MonoBehaviour
 {
+    [Header("Input Settings")]
+    [SerializeField] private InputActionReference toggleScoreboardAction;
+
     [Header("UI")]
     public GameObject scoreboardPanel;
     public Transform content;
     public GameObject playerRowPrefab;
 
-    private List<GameObject> rows = new List<GameObject>();
+    private readonly List<GameObject> rows = new();
 
-    void Start()
+    private void Start()
     {
         if (scoreboardPanel != null)
         {
@@ -20,11 +23,9 @@ public class ScoreboardController : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
-        if (Keyboard.current == null) return;
-
-        bool isTabHeld = Keyboard.current.tabKey.isPressed;
+        var isTabHeld = toggleScoreboardAction.action.IsInProgress();
 
         scoreboardPanel.SetActive(isTabHeld);
 
@@ -34,7 +35,7 @@ public class ScoreboardController : MonoBehaviour
         }
     }
 
-    void UpdateScoreboard(List<PlayerData> players)
+    private void UpdateScoreboard(List<PlayerData> players)
     {
         foreach (var row in rows)
         {
@@ -57,13 +58,13 @@ public class ScoreboardController : MonoBehaviour
         }
     }
 
-    List<PlayerData> GetPlayers()
+    private static List<PlayerData> GetPlayers()
     {
         return new List<PlayerData>()
         {
-            new PlayerData { name = "Gracz 1", kills = 4, deaths = 5, assists = 3 },
-            new PlayerData { name = "Gracz 2", kills = 2, deaths = 1, assists = 6 },
-            new PlayerData { name = "Gracz 3", kills = 7, deaths = 3, assists = 2 }
+            new() { name = "Player 1", kills = 4, deaths = 5, assists = 3 },
+            new() { name = "Player 2", kills = 2, deaths = 1, assists = 6 },
+            new() { name = "Player 3", kills = 7, deaths = 3, assists = 2 }
         };
     }
 }
