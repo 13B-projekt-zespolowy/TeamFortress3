@@ -1,11 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI; 
-using TMPro; 
 
 public class SettingsMenu : MonoBehaviour
 {
-    public GameObject mainMenuPanel;
-    public GameObject settingsPanel;
+    [SerializeField] private GameObject mainMenuPanel;
+    [SerializeField] private GameObject settingsPanel;
 
     public void OpenSettings()
     {

@@ -4,34 +4,40 @@ using UnityEngine.InputSystem;
 
 public class PauseMenuController : MonoBehaviour
 {
+    [Header("Input Settings")]
+    [SerializeField] private InputActionReference togglePauseAction;
+
     public GameObject pauseMenuPanel;
     public GameObject settingsPanel;
-    public PlayerController playerMovementScript;
 
     private bool isMenuOpen = false;
 
-    void Start()
+    private void Awake()
     {
+        togglePauseAction.action.performed += _ => ToggleMenu();
         pauseMenuPanel.SetActive(false);
-        if (settingsPanel != null) settingsPanel.SetActive(false);
     }
 
-    void Update()
+    private void Start()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        pauseMenuPanel.SetActive(false);
+        if (settingsPanel != null)
+            settingsPanel.SetActive(false);
+    }
+
+    private void ToggleMenu()
+    {
+        if (settingsPanel != null && settingsPanel.activeSelf)
         {
-            if (settingsPanel != null && settingsPanel.activeSelf)
-            {
-                CloseSettings();
-            }
-            else if (isMenuOpen)
-            {
-                ResumeGame();
-            }
-            else
-            {
-                OpenMenu();
-            }
+            CloseSettings();
+        }
+        else if (isMenuOpen)
+        {
+            ResumeGame();
+        }
+        else
+        {
+            OpenMenu();
         }
     }
 
@@ -40,10 +46,7 @@ public class PauseMenuController : MonoBehaviour
         pauseMenuPanel.SetActive(true);
         isMenuOpen = true;
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        if (playerMovementScript != null) playerMovementScript.canMove = false;
+        InputManager.Instance.SwitchInputMode(InputMode.Ui);
     }
 
     public void ResumeGame()
@@ -51,10 +54,7 @@ public class PauseMenuController : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         isMenuOpen = false;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        if (playerMovementScript != null) playerMovementScript.canMove = true;
+        InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
     }
 
     public void OpenSettings()
@@ -92,7 +92,7 @@ public class PauseMenuController : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void ChangeTeam() { Debug.Log("Zmieniam dru¿ynê"); }
-    public void ChangeClass() { Debug.Log("Zmieniam klasê"); }
-    public void CallVote() { Debug.Log("Rozpoczynam g³osowanie"); }
+    public void ChangeTeam() { Debug.Log("Changing team."); }
+    public void ChangeClass() { Debug.Log("Changing class."); }
+    public void CallVote() { Debug.Log("Calling vote."); }
 }

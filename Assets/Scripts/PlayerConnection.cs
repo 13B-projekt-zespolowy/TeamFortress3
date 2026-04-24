@@ -1,6 +1,4 @@
 using PurrNet;
-using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerConnection : NetworkBehaviour
 {
