@@ -1,30 +1,42 @@
+using PurrNet;
 using UnityEngine;
 
-public class Flag : MonoBehaviour
+public class Flag : NetworkBehaviour
 {
-    public Team team;
-    public Transform basePoint;
+    [SerializeField] private Team team;
+    [SerializeField] private Transform basePosition;
 
-    private PlayerFlag carrier;
+    private PlayerFlagCarry carrier;
 
-    public bool IsCarried => carrier != null;
+    private bool IsCarried => carrier != null;
+    public Team Team => team;
 
-    private void Update()
+    private void Awake()
     {
-        if (IsCarried)
-            transform.position = carrier.holdPoint.position;
+        if (!isServer)
+            return;
+
+        transform.position = basePosition.position;
     }
 
-    public void Pickup(PlayerFlag player)
+    public void Pickup(PlayerFlagCarry player)
     {
+        if (!isServer)
+            return;
+
         carrier = player;
-        player.carriedFlag = this;
+        carrier.carriedFlag = this;
         transform.SetParent(player.holdPoint);
         transform.localPosition = Vector3.zero;
     }
 
     public void Drop(Vector3 pos)
     {
+        if (!isServer)
+            return;
+
+        if (carrier != null)
+            carrier.carriedFlag = null;
         carrier = null;
         transform.SetParent(null);
         transform.position = pos;
@@ -32,23 +44,34 @@ public class Flag : MonoBehaviour
 
     public void ReturnToBase()
     {
+        if (!isServer)
+            return;
+
+        if (carrier != null)
+            carrier.carriedFlag = null;
         carrier = null;
         transform.SetParent(null);
-        transform.position = basePoint.position;
+        transform.position = basePosition.position;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponent<PlayerFlag>();
-        if (player == null) return;
-
-        if (player.team == team)
-        {
-            ReturnToBase();
+        if (!isServer)
             return;
-        }
 
-        if (!IsCarried && player.carriedFlag == null)
-            Pickup(player);
+        if (other.CompareTag("Player"))
+        {
+            var player = other.GetComponent<PlayerFlagCarry>();
+            var playerTeam = other.GetComponent<PlayerTeam>();
+
+            if (playerTeam.Team == team)
+            {
+                ReturnToBase();
+                return;
+            }
+
+            if (!IsCarried && player.carriedFlag == null)
+                Pickup(player);
+        }
     }
 }

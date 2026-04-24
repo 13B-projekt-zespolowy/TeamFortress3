@@ -434,6 +434,7 @@ GameObject:
   - component: {fileID: 8354818212045979342}
   - component: {fileID: 3369302211846565387}
   - component: {fileID: 2871207413334374826}
+  - component: {fileID: -6057844475691910031}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -742,6 +743,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50432cd4319fce54783a26a58c95ccdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFlag
-  team: 1
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  dropFlagAction: {fileID: -4458888289713857618, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   holdPoint: {fileID: 1707322413944411589}
   carriedFlag: {fileID: 0}
+--- !u!114 &-6057844475691910031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8958957543670348631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea84bd04b220ef543b342ed199d37e2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTeam
+  team:
+    _value: 1
+    _ownerAuth: 0
+    _sendIntervalInSeconds: 0

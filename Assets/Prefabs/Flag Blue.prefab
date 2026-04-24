@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a2a39f63d6b5fdc4697ab964c93a46bf, type: 2}
+    - target: {fileID: 3208267722337785582, guid: 4381c71ecc98b9b458164e710ca68e13, type: 3}
+      propertyPath: team
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8033315109626637286, guid: 4381c71ecc98b9b458164e710ca68e13, type: 3}
       propertyPath: m_Name
       value: Flag Blue

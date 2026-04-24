@@ -1,22 +1,25 @@
+using PurrNet;
 using UnityEngine;
 
-public class FlagBase : MonoBehaviour
+public class FlagBase : NetworkBehaviour
 {
-    public Team team;
+    [SerializeField] private Team team;
+    public Team Team => team;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent<PlayerFlag>(out var player))
-            return;
-        
-        if (player.team != team)
+        if (!isServer)
             return;
 
-        if (player.carriedFlag != null)
+        if (other.CompareTag("Player"))
         {
-            ModeManager.Instance.IncreaseScore(player.team);
-            player.carriedFlag.ReturnToBase();
-            player.carriedFlag = null;
+            var flag = other.GetComponent<PlayerFlagCarry>().carriedFlag;
+
+            if (flag != null && flag.Team != team)
+            {
+                ModeManager.Instance.IncreaseScore(flag.Team);
+                flag.ReturnToBase();
+            }
         }
     }
 }
