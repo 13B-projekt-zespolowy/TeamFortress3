@@ -1,9 +1,8 @@
-using System;
 using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-enum MovementType
+public enum MovementType
 {
     Walking,
     Crouching
@@ -24,6 +23,12 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float baseCameraHeight = 0.5f;
     [SerializeField] private float crouchCameraHeight = 0f;
 
+    [Header("Input Settings")]
+    [SerializeField] private InputActionReference lookAction;
+    [SerializeField] private InputActionReference moveAction;
+    [SerializeField] private InputActionReference jumpAction;
+    [SerializeField] private InputActionReference crouchAction;
+
     [HideInInspector] public bool canMove = true;
 
     private Vector2 moveInput = Vector2.zero;
@@ -38,11 +43,6 @@ public class PlayerController : NetworkBehaviour
     private CharacterController controller;
     private Camera playerCamera;
 
-    private InputAction lookAction;
-    private InputAction moveAction;
-    private InputAction jumpAction;
-    private InputAction crouchAction;
-
     private void Awake()
     {
         playerCamera = transform.Find("PlayerCamera").GetComponent<Camera>();
@@ -51,14 +51,9 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        lookAction = InputSystem.actions.FindAction("Look");
-        moveAction = InputSystem.actions.FindAction("Move");
-        jumpAction = InputSystem.actions.FindAction("Jump");
-        crouchAction = InputSystem.actions.FindAction("Crouch");
-
-        jumpAction.performed += OnJumpActionPerformed;
-        crouchAction.performed += _ => StartCrouching();
-        crouchAction.canceled += _ => StopCrouching();
+        jumpAction.action.performed += OnJumpActionPerformed;
+        crouchAction.action.performed += _ => StartCrouching();
+        crouchAction.action.canceled += _ => StopCrouching();
 
         cameraHeight = baseCameraHeight;
 
@@ -102,7 +97,7 @@ public class PlayerController : NetworkBehaviour
 
     void MouseLook()
     {
-        Vector2 lookDelta = lookAction.ReadValue<Vector2>();
+        Vector2 lookDelta = lookAction.action.ReadValue<Vector2>();
         rotationX -= lookDelta.y * cameraSensitivity * Time.deltaTime;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
         transform.Rotate(Vector3.up, lookDelta.x * cameraSensitivity * Time.deltaTime);
@@ -113,14 +108,19 @@ public class PlayerController : NetworkBehaviour
     {
         movementType = crouchPressed ? MovementType.Crouching : MovementType.Walking;
         walkMotion = Vector3.zero;
-        moveInput = moveAction.ReadValue<Vector2>();
+        moveInput = moveAction.action.ReadValue<Vector2>();
 
         walkMotion += transform.right * moveInput.x;
         walkMotion += transform.forward * moveInput.y;
-
-        if (walkMotion.magnitude > 1) walkMotion.Normalize();
+        walkMotion = Vector3.ClampMagnitude(walkMotion, 1.0f);
 
         jumpVelocity += gravity * Time.deltaTime;
+
+        if (controller.isGrounded)
+        {
+            jumpVelocity.x = 0.0f;
+            jumpVelocity.z = 0.0f;
+        }
 
         if (controller.isGrounded && jumpVelocity.y < 0)
         {
@@ -128,7 +128,8 @@ public class PlayerController : NetworkBehaviour
         }
 
         float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
-        controller.Move((walkMotion * movementSpeed + jumpVelocity) * Time.deltaTime);
+        var finalMove = walkMotion * movementSpeed + jumpVelocity;
+        controller.Move(finalMove * Time.deltaTime);
     }
 
     void ApplyOnlyGravity()

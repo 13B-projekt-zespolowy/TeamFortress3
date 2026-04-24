@@ -11,7 +11,7 @@ public class GameManager : NetworkBehaviour
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
             Despawn();
         else
             Instance = this;
@@ -81,7 +81,7 @@ public class GameManager : NetworkBehaviour
 
     private Transform GetSpawnPoint()
     {
-        return (spawnPointsRoot) ? spawnPointsRoot.GetChild(Random.Range(0, spawnPointsRoot.childCount)) : null;
+        return spawnPointsRoot ? spawnPointsRoot.GetChild(Random.Range(0, spawnPointsRoot.childCount)) : null;
     }
 }
 

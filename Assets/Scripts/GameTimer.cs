@@ -4,7 +4,7 @@ using TMPro;
 
 public class GameTimer : MonoBehaviour
 {
-    [Header("Ustawienia Timera")]
+    [Header("Timer settings")]
     [SerializeField] private float timeRemaining = 300f;
     [SerializeField] private bool timerIsRunning = false;
 
@@ -18,7 +18,7 @@ public class GameTimer : MonoBehaviour
     private void Start()
     {
         if (timerText == null)
-            Debug.LogError("Nie przypisano timerText", this);
+            Debug.LogError($"{nameof(timerText)} is null", this);
 
         timerIsRunning = true;
         DisplayTime(timeRemaining);
@@ -51,6 +51,7 @@ public class GameTimer : MonoBehaviour
     {
         timerIsRunning = false;
     }
+
     private void DisplayTime(float timeToDisplay)
     {
         if(timeRemaining < 10f)

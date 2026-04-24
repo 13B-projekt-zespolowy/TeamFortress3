@@ -3,7 +3,7 @@
     "name": "InputSystem_Actions",
     "maps": [
         {
-            "name": "Player",
+            "name": "Gameplay",
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
@@ -91,6 +91,15 @@
                     "name": "Reload",
                     "type": "Button",
                     "id": "221565ca-34ce-4729-922b-778759de4e18",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Open Chat",
+                    "type": "Button",
+                    "id": "ea4a866c-05e8-490d-be3e-09e208bfbe38",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -493,6 +502,17 @@
                     "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55f600c1-cc6e-46be-9beb-d0af5c9fb629",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Open Chat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -522,7 +542,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "15cef263-9014-4fd5-94d9-4e4a6234a6ef",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -594,6 +614,24 @@
                     "name": "ClassChange",
                     "type": "Button",
                     "id": "16fe362e-16eb-4a77-9af5-1d2511ef252a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Send Message",
+                    "type": "Button",
+                    "id": "cf6ad3c9-24f9-4f62-89ff-07bc79e99bc3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Cancel Chat",
+                    "type": "Button",
+                    "id": "5696b90a-8670-4538-b7cb-136e41c5b62d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1027,6 +1065,56 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ClassChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "977ff728-3709-4c8d-ab68-11d7fcecf90b",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Send Message",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1d403b1-126e-4417-aa0f-7bcced71b069",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Cancel Chat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Always",
+            "id": "dfeade51-370e-4c31-b865-73f65e99ecdd",
+            "actions": [
+                {
+                    "name": "Toggle Pause",
+                    "type": "Button",
+                    "id": "f51c6220-97ff-48a4-84e4-98ca369c992b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5963a941-b4ee-4499-8686-0d09c2ae9df2",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Toggle Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
