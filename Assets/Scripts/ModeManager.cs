@@ -1,22 +1,20 @@
+using PurrNet;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Events;
 
-public class ModeManager : MonoBehaviour
+public class ModeManager : NetworkBehaviour
 {
     public static ModeManager Instance { get; private set; }
 
-    private int redScore;
-    private int blueScore;
+    private SyncVar<int> redScore = new();
+    private SyncVar<int> blueScore = new();
     [SerializeField] private int winScore = 3;
-
-    [SerializeField] private GameTimer timer;
 
     [SerializeField] private TextMeshProUGUI redText;
     [SerializeField] private TextMeshProUGUI blueText;
     [SerializeField] private TextMeshProUGUI resultText;
 
-    public UnityEvent onGameEnd;
+    private GameTimer timer;
 
     private void Awake()
     {
@@ -30,12 +28,20 @@ public class ModeManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        timer = FindAnyObjectByType<GameTimer>();
+    }
+
     public void IncreaseScore(Team team)
     {
+        if (!isServer)
+            return;
+
         if (team == Team.Red)
-            redScore++;
+            redScore.value++;
         else if (team == Team.Blue)
-            blueScore++;
+            blueScore.value++;
 
         timer.AddTime(180f);
 
@@ -50,14 +56,21 @@ public class ModeManager : MonoBehaviour
 
     public void EndWin(Team winner)
     {
-        resultText.text = $"Winner: {winner}";
-        onGameEnd.Invoke();
+        timer.StopTimer();
+        ShowResultText($"Winner: {winner}");
     }
 
     public void EndDraw()
     {
-        resultText.text = "Draw";
-        onGameEnd.Invoke();
+        timer.StopTimer();
+        ShowResultText("Draw");
+    }
+
+    [ObserversRpc]
+    private void ShowResultText(string text)
+    {
+        resultText.gameObject.SetActive(true);
+        resultText.text = text;
     }
 }
 

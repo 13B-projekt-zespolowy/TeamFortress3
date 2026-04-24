@@ -1,48 +1,65 @@
+using PurrNet;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameTimer : MonoBehaviour
+public class GameTimer : NetworkBehaviour
 {
     [Header("Timer settings")]
-    [SerializeField] private float timeRemaining = 300f;
-    [SerializeField] private bool timerIsRunning = false;
+    [SerializeField] private SyncVar<float> timeRemaining = new(300.0f);
 
-    [SerializeField] private ModeManager modeManager;
+    [SerializeField] private bool timerIsRunning = true;
 
     public float TimeRemaining => timeRemaining;
 
     public UnityEvent OnTimerEnd;
 
+    private ModeManager modeManager;
+
     private void Start()
     {
+        modeManager = FindAnyObjectByType<ModeManager>();
+
+        if (!isServer)
+            return;
+
         timerIsRunning = true;
     }
 
     private void FixedUpdate()
     {
+        if (!isServer)
+            return;
+
         if (!timerIsRunning)
             return;
 
         if (timeRemaining > 0)
         {
-            timeRemaining -= Time.fixedDeltaTime;
+            timeRemaining.value -= Time.fixedDeltaTime;
         }
         else
         {
-            timeRemaining = 0;
+            timeRemaining.value = 0;
             StopTimer();
-            if (modeManager != null)
-                modeManager.EndDraw();
+            modeManager.EndDraw();
         }
     }
 
+    [ServerRpc]
     public void AddTime(float time)
     {
-        timeRemaining += time;
+        if (!isServer)
+            return;
+
+        timeRemaining.value += time;
     }
 
+    [ServerRpc]
     public void StopTimer()
     {
+        if (!isServer)
+            return;
+
         timerIsRunning = false;
     }
 }
