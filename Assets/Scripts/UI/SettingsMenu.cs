@@ -39,3 +39,4 @@ public class SettingsMenu : MonoBehaviour
         else if (fpsIndex == 5) Application.targetFrameRate = -1; 
     }
 }
+
