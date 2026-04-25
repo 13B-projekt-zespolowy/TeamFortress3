@@ -11,7 +11,7 @@ public class GameManager : NetworkBehaviour
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
+        if (Instance != null && Instance != this)
             Despawn();
         else
             Instance = this;
@@ -65,7 +65,6 @@ public class GameManager : NetworkBehaviour
 
         if (playerObject.TryGetComponent(out PlayerHealth health))
             health.RespawnSnapRpc(spawnPos, spawnRot);
-
     }
 
     public void RemovePlayer(PlayerID player)
@@ -81,7 +80,7 @@ public class GameManager : NetworkBehaviour
 
     private Transform GetSpawnPoint()
     {
-        return (spawnPointsRoot) ? spawnPointsRoot.GetChild(Random.Range(0, spawnPointsRoot.childCount)) : null;
+        return spawnPointsRoot ? spawnPointsRoot.GetChild(Random.Range(0, spawnPointsRoot.childCount)) : null;
     }
 }
 

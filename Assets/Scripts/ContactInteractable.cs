@@ -15,7 +15,7 @@ public abstract class ContactInteractable : NetworkBehaviour
     public void HandleInteraction(GameObject sender)
     {
         var action = OnInteractedWith(sender);
-        switch(action)
+        switch (action)
         {
             case InteractionResultAction.None:
                 return;
@@ -24,5 +24,4 @@ public abstract class ContactInteractable : NetworkBehaviour
                 return;
         }
     }
-
 }

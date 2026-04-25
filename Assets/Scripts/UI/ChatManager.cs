@@ -4,26 +4,42 @@ using UnityEngine.InputSystem;
 
 public class ChatManager : MonoBehaviour
 {
+    [Header("Input Settings")]
+    [SerializeField] private InputActionReference openChatAction;
+    [SerializeField] private InputActionReference sendMessageAction;
+    [SerializeField] private InputActionReference cancelChatAction;
+
     public GameObject chatPanel;
     public TMP_InputField chatInput;
     public GameObject messagePrefab;
     public Transform messageArea;
-    public PlayerController playerMovement;
 
     public float showDuration = 4f;
 
     private float hideTimer = 0f;
     private bool isTyping = false;
 
-    void Start()
+    private void Awake()
     {
-        chatInput.gameObject.SetActive(false);
-        if (chatPanel != null) chatPanel.SetActive(false);
+        openChatAction.action.performed += _ => OpenChat();
+        sendMessageAction.action.performed += _ => SendMessageToChat();
+        cancelChatAction.action.performed += _ => CancelChat();
     }
 
-    void Update()
+    private void Start()
     {
-        if (!isTyping && chatPanel != null && chatPanel.activeSelf)
+        chatInput.gameObject.SetActive(false);
+
+        if (chatPanel != null)
+            chatPanel.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (isTyping)
+            return;
+
+        if (chatPanel != null && chatPanel.activeSelf)
         {
             hideTimer -= Time.deltaTime;
             if (hideTimer <= 0f)
@@ -31,58 +47,37 @@ public class ChatManager : MonoBehaviour
                 chatPanel.SetActive(false);
             }
         }
-
-        if (Keyboard.current != null)
-        {
-            if (Keyboard.current.tKey.wasPressedThisFrame && !isTyping)
-            {
-                OpenChat();
-            }
-
-            if (Keyboard.current.enterKey.wasPressedThisFrame && isTyping)
-            {
-                SendMessageToChat();
-            }
-
-            if (isTyping && Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                CancelChat();
-            }
-        }
     }
 
     public void OpenChat()
     {
+        InputManager.Instance.SwitchInputMode(InputMode.Ui);
+
         isTyping = true;
         chatPanel.SetActive(true);
         chatInput.gameObject.SetActive(true);
         chatInput.ActivateInputField();
-
-        if (playerMovement != null) playerMovement.canMove = false;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     public void SendMessageToChat()
     {
+        InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
+
         if (!string.IsNullOrWhiteSpace(chatInput.text))
         {
             GameObject newMessage = Instantiate(messagePrefab, messageArea);
             TextMeshProUGUI textComponent = newMessage.GetComponent<TextMeshProUGUI>();
             textComponent.text = "<b><color=red>Player1</color>:</b> " + chatInput.text;
-            ShowChatTemporarily();
-        }
-        else
-        {
-            ShowChatTemporarily();
         }
 
+        ShowChatTemporarily();
         CloseChatUI();
     }
 
     private void CancelChat()
     {
+        InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
+
         ShowChatTemporarily();
         CloseChatUI();
     }
@@ -92,11 +87,6 @@ public class ChatManager : MonoBehaviour
         isTyping = false;
         chatInput.text = "";
         chatInput.gameObject.SetActive(false);
-
-        if (playerMovement != null) playerMovement.canMove = true;
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     public void ShowChatTemporarily()

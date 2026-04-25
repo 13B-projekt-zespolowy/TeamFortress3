@@ -20,6 +20,11 @@ public class ClassSelectUI : MonoBehaviour
         toggleAction.action.Disable();
     }
 
+    private void Start()
+    {
+        SetMenuState(true);
+    }
+
     private void OnToggleMenu(InputAction.CallbackContext context)
     {
         SetMenuState(!uiPanel.activeSelf);
@@ -28,8 +33,7 @@ public class ClassSelectUI : MonoBehaviour
     public void SetMenuState(bool state)
     {
         uiPanel.SetActive(state);
-        Cursor.visible = state;
-        Cursor.lockState = state ? CursorLockMode.None : CursorLockMode.Locked;
+        InputManager.Instance.SwitchInputMode(state ? InputMode.Ui : InputMode.Gameplay);
     }
 
     public void SelectClass(PlayerClass playerClass)

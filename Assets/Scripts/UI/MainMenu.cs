@@ -10,7 +10,7 @@ public class MainMenu : MonoBehaviour
 
     public void QuitGame()
     {
-        Debug.Log("Zamykam grê!");
+        Debug.Log("Quitting game!");
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
