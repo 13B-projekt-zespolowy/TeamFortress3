@@ -4,8 +4,11 @@ using UnityEngine;
 public class WeaponInfo : ScriptableObject
 {
     public enum FireType { Semi, Auto }
-    public enum ShootMode { Hitscan, Projectile }
+    public enum ShootMode { Hitscan, Projectile, Melee }
 
+    public string weaponName;
+    public Sprite weaponIcon;
+    public GameObject viewmodel;
     [Header("Types")]
     public FireType fireType;
     public ShootMode shootMode;
@@ -21,6 +24,8 @@ public class WeaponInfo : ScriptableObject
     public float range = 100f;
     //public float spread = 0.01f; //TO DO
 
+    [Header("Melee")]
+    public float meleeRadius = 0.5f;
     [Header("Projectile")]
     public GameObject projectilePrefab;
 }
