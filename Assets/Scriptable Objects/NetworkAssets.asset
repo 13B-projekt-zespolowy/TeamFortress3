@@ -24,6 +24,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 74c21602d204c044ca05a524931ea72e, type: 2}
   - {fileID: 11400000, guid: 2c414129e40972c4dafad2fd967feff6, type: 2}
   - {fileID: 11400000, guid: 803393fe00044ef4a8a33eedc56fa6cd, type: 2}
+  - {fileID: 11400000, guid: a4105fccdf89ba04d814be92cd152378, type: 2}
+  - {fileID: 11400000, guid: 28328f8f3ba46474db5445fa9946064f, type: 2}
   _availableTypeNames:
   - PurrNet.AlwaysVisibleRule, PurrNet.Runtime, Version=0.0.0.0, Culture=neutral,
     PublicKeyToken=null
@@ -211,7 +213,7 @@ MonoBehaviour:
   - WeaponProjectile, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   - UnityEngine.Rendering.Universal.WhiteBalance, Unity.RenderPipelines.Universal.Runtime,
     Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  _bakedIds: 000000000100000002000000030000000400000005000000
+  _bakedIds: 0000000001000000020000000300000004000000050000000600000007000000
   _bakedAssets:
   - {fileID: 11400000}
   - {fileID: 11400000, guid: 844357175adeb1e4cbc1629d79197cfb, type: 2}
@@ -219,3 +221,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 74c21602d204c044ca05a524931ea72e, type: 2}
   - {fileID: 11400000, guid: 2c414129e40972c4dafad2fd967feff6, type: 2}
   - {fileID: 11400000, guid: 803393fe00044ef4a8a33eedc56fa6cd, type: 2}
+  - {fileID: 11400000, guid: a4105fccdf89ba04d814be92cd152378, type: 2}
+  - {fileID: 11400000, guid: 28328f8f3ba46474db5445fa9946064f, type: 2}

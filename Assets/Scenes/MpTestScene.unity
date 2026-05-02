@@ -256,6 +256,98 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: 90, z: 0}
+--- !u!1 &372232610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 372232611}
+  - component: {fileID: 372232612}
+  - component: {fileID: 372232613}
+  - component: {fileID: 372232614}
+  m_Layer: 5
+  m_Name: Weapon Switch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &372232611
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372232610}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 0}
+  m_Pivot: {x: 1, y: 0.5}
+--- !u!114 &372232612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372232610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 5
+  m_Spacing: 1
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!225 &372232613
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372232610}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &372232614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372232610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: deb8373eabf46364ea2c940f1098e1dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitchUI
+  cardPrefab: {fileID: 3752124204988903657, guid: a3ac6a652cf18b34b9e4bb3dfaa05ddc, type: 3}
+  canvasGroup: {fileID: 372232613}
+  displayDuration: 2
+  fadeSpeed: 5
 --- !u!1 &437944151
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5e28a229dea50f61a3efad9b9a27142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AmmoBoxInteractable
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -359,8 +453,6 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   ammoBonus: 30
 --- !u!114 &725191475
 MonoBehaviour:
@@ -374,6 +466,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d497b70c6fb6adc46b663609bee66dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkRigidbody
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -381,8 +475,8 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
+  _debugGizmos: 0
+  _debugTextOffset: 2
   _ownerAuth: 0
   _acceptableError: 0.05
   _hardCorrectionThreshold: 2
@@ -401,8 +495,6 @@ MonoBehaviour:
   _positionChangeThreshold: 0.001
   _rotationChangeThreshold: 0.001
   _velocityStopThreshold: 0.001
-  _debugGizmos: 0
-  _debugTextOffset: 2
 --- !u!54 &725191476
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1861,15 +1953,15 @@ PrefabInstance:
       value: Network Manager
       objectReference: {fileID: 0}
     - target: {fileID: 3375943718044725007, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
-      propertyPath: 'spawnPoints.Array.data[0]'
+      propertyPath: spawnPoints.Array.data[0]
       value: 
       objectReference: {fileID: 437944152}
     - target: {fileID: 3375943718044725007, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
-      propertyPath: 'spawnPoints.Array.data[1]'
+      propertyPath: spawnPoints.Array.data[1]
       value: 
       objectReference: {fileID: 708316604}
     - target: {fileID: 3375943718044725007, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}
-      propertyPath: 'spawnPoints.Array.data[2]'
+      propertyPath: spawnPoints.Array.data[2]
       value: 
       objectReference: {fileID: 1263028142}
     - target: {fileID: 5267864835383859823, guid: 91fd4371a81423f4e970639ce2a05b0a, type: 3}

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21954c62248d4a746aa4f1ca8e3cf8f2, type: 3}
-  m_Name: Test Pistol
+  m_Name: Test Melee
   m_EditorClassIdentifier: Assembly-CSharp::WeaponInfo
-  weaponName: Test Pistol
+  weaponName: Test Melee
   weaponIcon: {fileID: 0}
-  viewmodel: {fileID: 8738954524429773079, guid: 38c770ff04987e74e96b38dcde5d31e4, type: 3}
-  fireType: 0
-  shootMode: 1
-  magazineSize: 5
-  initialReserve: 90
-  fireRate: 10
-  damage: 10
+  viewmodel: {fileID: 5491175982277805114, guid: 255bbe8d947a68c40961be4221d001b1, type: 3}
+  fireType: 1
+  shootMode: 2
+  magazineSize: 1
+  initialReserve: 1
+  fireRate: 2
+  damage: 25
   range: 100
   meleeRadius: 0.5
-  projectilePrefab: {fileID: 5447330612635458532, guid: 2f3440d1f9c18c249a2a363e79bf6d60, type: 3}
+  projectilePrefab: {fileID: 0}
