@@ -24,7 +24,7 @@ public class WeaponProjectile : NetworkBehaviour
 
     void Update()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.position += transform.forward * (speed * Time.deltaTime);
     }
 
     void OnTriggerEnter(Collider other)

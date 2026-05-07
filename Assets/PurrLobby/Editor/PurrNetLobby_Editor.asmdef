@@ -1,0 +1,42 @@
+{
+    "name": "PurrNetLobby_Editor",
+    "rootNamespace": "PurrLobby.Editor",
+    "references": [
+        "GUID:a1bf09639aa73494fb75c7113fc43818",
+        "GUID:68bd7fdb68ef2684e982e8a9825b18a5",
+        "GUID:37e17ffe38d86ae48bc3207e83ffef88",
+        "GUID:1beb10fd218482c4c919c79f867341a0",
+        "GUID:6c512c1d945cc374885c9a38d9b21034",
+        "GUID:629ad64ea20117f43b28b33033f75b88",
+        "GUID:6e20f757a1bae164fa42750dd2b27dcb",
+        "GUID:3e9ae0c0fe2a45c4a1386ba4ad6308e7",
+        "GUID:3b9dfc9f402a40b4a6c9688de64a5c38",
+        "GUID:3b5390adca4e2bb4791cb930316d6f3e",
+        "GUID:0a0471484b079be408cb3a0d7fe94736"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.rlabrecque.steamworks.net",
+            "expression": "2024",
+            "define": "STEAMWORKS_NET_PACKAGE"
+        },
+        {
+            "name": "com.unity.services.authentication",
+            "expression": "3.4.0",
+            "define": "UTP_AUTH"
+        },
+        {
+            "name": "com.unity.services.multiplayer",
+            "expression": "1.1.2",
+            "define": "UTP_LOBBYRELAY"
+        }
+    ],
+    "noEngineReferences": false
+}

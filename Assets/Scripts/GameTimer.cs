@@ -1,69 +1,65 @@
+using PurrNet;
 using UnityEngine;
 using UnityEngine.Events;
-using TMPro;
 
-public class GameTimer : MonoBehaviour
+public class GameTimer : NetworkBehaviour
 {
-    [Header("Ustawienia Timera")]
-    [SerializeField] private float timeRemaining = 300f;
-    [SerializeField] private bool timerIsRunning = false;
+    [Header("Timer settings")]
+    [SerializeField] private SyncVar<float> timeRemaining = new(300.0f);
 
-    [Header("UI Element")]
-    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private bool timerIsRunning = true;
 
-    [SerializeField] private ModeManager modeManager;
+    public float TimeRemaining => timeRemaining;
 
     public UnityEvent OnTimerEnd;
 
+    private ModeManager modeManager;
+
     private void Start()
     {
-        if (timerText == null)
-            Debug.LogError("Nie przypisano timerText", this);
+        modeManager = FindAnyObjectByType<ModeManager>();
+
+        if (!isServer)
+            return;
 
         timerIsRunning = true;
-        DisplayTime(timeRemaining);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (!timerIsRunning) return;
+        if (!isServer)
+            return;
 
-        if(timeRemaining > 0)
+        if (!timerIsRunning)
+            return;
+
+        if (timeRemaining > 0)
         {
-            DisplayTime(timeRemaining);
-            timeRemaining -= Time.deltaTime;
+            timeRemaining.value -= Time.fixedDeltaTime;
         }
         else
         {
-            timeRemaining = 0;
+            timeRemaining.value = 0;
             StopTimer();
-            DisplayTime(timeRemaining);
             modeManager.EndDraw();
         }
     }
 
+    [ServerRpc]
     public void AddTime(float time)
     {
-        timeRemaining += time;
+        if (!isServer)
+            return;
+
+        timeRemaining.value += time;
     }
 
+    [ServerRpc]
     public void StopTimer()
     {
-        timerIsRunning = false;
-    }
-    private void DisplayTime(float timeToDisplay)
-    {
-        if(timeRemaining < 10f)
-        {
-            timerText.color = Color.red;
-        }
-        else
-        {
-            timerText.color = Color.white;
-        }
+        if (!isServer)
+            return;
 
-        int minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        int seconds = Mathf.FloorToInt(timeToDisplay % 60);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        timerIsRunning = false;
     }
 }
