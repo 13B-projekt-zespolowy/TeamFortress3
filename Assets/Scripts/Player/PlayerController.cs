@@ -52,10 +52,21 @@ public class PlayerController : NetworkBehaviour
     private CharacterController controller;
     private Camera playerCamera;
 
-
     private Vector3 currentVelocity = Vector3.zero;
 
+    private bool wantsUncrouch = false;
 
+    private bool CanUncrouch()
+    {
+        float fullHeight = 2f;
+        float crouchHeight = 1f;
+        float heightDifference = fullHeight - crouchHeight;
+
+        Vector3 bottom = transform.position + controller.center + Vector3.up * (fullHeight / 2f - controller.radius);
+        Vector3 top = transform.position + controller.center + Vector3.up * (fullHeight / 2f + heightDifference - controller.radius);
+
+        return !Physics.CheckCapsule(bottom, top, controller.radius - 0.01f, ~LayerMask.GetMask("Player"));
+    }
 
     private void Awake()
     {
@@ -74,6 +85,7 @@ public class PlayerController : NetworkBehaviour
 
     private void StartCrouching()
     {
+        wantsUncrouch = false;
         crouchPressed = true;
         controller.height = 1;
         controller.center = new Vector3(0, -0.5f, 0);
@@ -81,9 +93,16 @@ public class PlayerController : NetworkBehaviour
 
     private void StopCrouching()
     {
+        wantsUncrouch = true;
+    }
+
+    private void HandleUncrouching()
+    {
+        if (!wantsUncrouch || !CanUncrouch()) return;
         crouchPressed = false;
         controller.height = 2;
         controller.center = new Vector3(0, 0, 0);
+        wantsUncrouch = false;
     }
 
     protected override void OnSpawned()
@@ -189,6 +208,7 @@ public class PlayerController : NetworkBehaviour
     {
         UpdateCameraHeight();
         MouseLook();
+        HandleUncrouching();
         Motion();
     }
 
