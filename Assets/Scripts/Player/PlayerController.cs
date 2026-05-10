@@ -12,13 +12,15 @@ public enum MovementType
 public class PlayerController : NetworkBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] private float cameraSensitivity = 20.0f;
     [SerializeField] private float walkSpeed = 5.0f;
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float jumpForceVertical = 10.0f;
     [SerializeField] private float jumpForceHorizontal = 1.0f;
     [SerializeField] private Vector3 gravity = Vector3.up * -40.0f;
-
+    [SerializeField] private float groundAcceleration = 15f;
+    [SerializeField] private float groundDeceleration = 20f;
+    [SerializeField] private float airAcceleration = 5f;
+    [SerializeField] private float directionChangeMultiplier = 3f;
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.15f;
 
@@ -27,8 +29,8 @@ public class PlayerController : NetworkBehaviour
     private bool pendingJump;
 
 
-
     [Header("Camera Settings")]
+    [SerializeField] private float cameraSensitivity = 20.0f;
     [SerializeField] private float baseCameraHeight = 0.5f;
     [SerializeField] private float crouchCameraHeight = 0f;
 
@@ -49,6 +51,11 @@ public class PlayerController : NetworkBehaviour
 
     private CharacterController controller;
     private Camera playerCamera;
+
+
+    private Vector3 currentVelocity = Vector3.zero;
+
+
 
     private void Awake()
     {
@@ -153,8 +160,29 @@ public class PlayerController : NetworkBehaviour
         }
 
         float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
-        var finalMove = walkMotion * movementSpeed + jumpVelocity;
+
+
+
+        Vector3 targetVelocity = walkMotion * movementSpeed;
+
+        float dot = Vector3.Dot(currentVelocity.normalized, targetVelocity.normalized);
+        float directionMultiplier = dot < 0 ? directionChangeMultiplier : 1f;
+
+        float accel = controller.isGrounded
+            ? (targetVelocity.magnitude > 0.01f ? groundAcceleration : groundDeceleration)
+            : airAcceleration;
+
+        currentVelocity = Vector3.MoveTowards(
+            currentVelocity,
+            targetVelocity,
+            accel * directionMultiplier * Time.deltaTime
+        );
+
+        currentVelocity = Vector3.MoveTowards(currentVelocity, targetVelocity, accel * Time.deltaTime);
+        var finalMove = currentVelocity + jumpVelocity;
         controller.Move(finalMove * Time.deltaTime);
+
+
     }
 
     private void Update()
