@@ -17,7 +17,16 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float jumpForceVertical = 10.0f;
     [SerializeField] private float jumpForceHorizontal = 1.0f;
-    [SerializeField] private Vector3 gravity = Vector3.up * -40.0f; 
+    [SerializeField] private Vector3 gravity = Vector3.up * -40.0f;
+
+    [SerializeField] private float coyoteTime = 0.15f;
+    [SerializeField] private float jumpBufferTime = 0.15f;
+
+    private float coyoteTimer = 0f;
+    private float jumpBufferTimer = 0f;
+    private bool pendingJump;
+
+
 
     [Header("Camera Settings")]
     [SerializeField] private float baseCameraHeight = 0.5f;
@@ -82,13 +91,8 @@ public class PlayerController : NetworkBehaviour
 
     private void OnJumpActionPerformed(InputAction.CallbackContext context)
     {
-        if (!controller.isGrounded)
-            return;
-
-        jumpVelocity =
-            jumpForceVertical * Vector3.up +
-            jumpForceHorizontal * moveInput.y * transform.forward +
-            jumpForceHorizontal * moveInput.x * transform.right;
+        pendingJump = true;
+        jumpBufferTimer = jumpBufferTime;
     }
 
     void MouseLook()
@@ -110,17 +114,42 @@ public class PlayerController : NetworkBehaviour
         walkMotion += transform.forward * moveInput.y;
         walkMotion = Vector3.ClampMagnitude(walkMotion, 1.0f);
 
-        jumpVelocity += gravity * Time.deltaTime;
 
         if (controller.isGrounded)
         {
-            jumpVelocity.x = 0.0f;
-            jumpVelocity.z = 0.0f;
+            coyoteTimer = coyoteTime;
+        }
+        else
+        {
+            coyoteTimer -= Time.deltaTime;
+        }
+
+        if (jumpBufferTimer > 0)
+        {
+            jumpBufferTimer -= Time.deltaTime;
+        }
+
+        if (pendingJump && jumpBufferTimer > 0 && coyoteTimer > 0)
+        {
+
+            jumpVelocity =
+            jumpForceVertical * Vector3.up +
+            jumpForceHorizontal * moveInput.y * transform.forward +
+            jumpForceHorizontal * moveInput.x * transform.right;
+            coyoteTimer = 0f;
+            jumpBufferTimer = 0f;
+            pendingJump = false;
+        }
+
+
+        if (!controller.isGrounded)
+        {
+            jumpVelocity += gravity * Time.deltaTime;
         }
 
         if (controller.isGrounded && jumpVelocity.y < 0)
         {
-            jumpVelocity.y = -5f;
+            jumpVelocity = Vector3.zero;
         }
 
         float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
