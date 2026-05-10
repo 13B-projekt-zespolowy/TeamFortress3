@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
+    [SerializeField] private GameObject sceneCamera;
     [SerializeField] private Transform spawnPointsRoot;
+    [SerializeField] private float respawnTime = 5f;
 
     public static GameManager Instance;
     private Dictionary<PlayerID, PlayerSession> sessions = new();
@@ -55,16 +57,28 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void RespawnPlayer(PlayerID player, GameObject playerObject)
+    public void StartRespawnCountdown(PlayerID player)
     {
         if (!isServer) return;
 
-        Transform spawnPoint = GetSpawnPoint();
-        Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
-        Quaternion spawnRot = (spawnPoint) ? spawnPoint.rotation : Quaternion.identity;
+        if (sessions.TryGetValue(player, out PlayerSession session))
+            session.connection.respawnTimer.StartTimer(respawnTime);
+    }
 
-        if (playerObject.TryGetComponent(out PlayerHealth health))
-            health.RespawnSnapRpc(spawnPos, spawnRot);
+    public void RespawnPlayer(PlayerID player)
+    {
+        if (!isServer) return;
+
+        if (sessions.TryGetValue(player, out PlayerSession session) && session.playerObject != null)
+        {
+            NetworkIdentity playerObject = session.playerObject;
+
+            Transform spawnPoint = GetSpawnPoint();
+            Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
+            Quaternion spawnRot = (spawnPoint) ? spawnPoint.rotation : Quaternion.identity;
+
+            RespawnPlayerRpc(playerObject, spawnPos, spawnRot);
+        }
     }
 
     public void RemovePlayer(PlayerID player)
@@ -76,6 +90,23 @@ public class GameManager : NetworkBehaviour
 
             sessions.Remove(player);
         }
+    }
+
+    public GameObject GetSceneCamera() => sceneCamera;
+
+    [ObserversRpc]
+    private void RespawnPlayerRpc(NetworkIdentity playerObject, Vector3 position, Quaternion rotation)
+    {
+        if (!playerObject.TryGetComponent(out PlayerHealth health) || !playerObject.TryGetComponent(out PlayerShooter shooter)) return;
+
+        Transform playerTransform = playerObject.transform;
+
+        playerTransform.position = position;
+        playerTransform.rotation = rotation;
+
+        health.RefillHealth();
+        shooter.RefillAmmo();
+        playerObject.gameObject.SetActive(true);
     }
 
     private Transform GetSpawnPoint()
