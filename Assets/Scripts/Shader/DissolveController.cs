@@ -3,15 +3,22 @@ using UnityEngine;
 public class DissolveController : MonoBehaviour
 {
     private Material[] _materials;
-    private float _currentDissolveAmount = 0f;
-    private bool _isDissolving = false;
+    private Renderer[] _renderers;
 
     [Header("Parametry animacji")]
     [Tooltip("Szybkoœæ, z jak¹ obiekt bêdzie znika³/pojawia³.")]
     public float dissolveSpeed = 0.5f;
 
+    [Header("Testowanie w edytorze")]
+    [Tooltip("Rêczne sterowanie rozpuszczaniem.")]
+    [Range(0f, 1f)]
+    public float currentDissolveAmount = 0f;
+
+    private bool _isDissolving = false;
+
     [Header("Parametryzacja wizualna shadera")]
     [Tooltip("Ustawia kolor krawêdzi wypalania bezpoœrednio w shaderze.")]
+    [ColorUsage(true, true)]
     public Color edgeColor = new Color(1.0f, 0.5f, 0.0f, 1.0f);
 
     [Tooltip("Ustawia gruboœæ krawêdzi wypalania.")]
@@ -20,12 +27,12 @@ public class DissolveController : MonoBehaviour
 
     void Start()
     {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        _materials = new Material[renderers.Length];
+        _renderers = GetComponentsInChildren<Renderer>();
+        _materials = new Material[_renderers.Length];
 
-        for (int i = 0; i < renderers.Length; i++)
+        for (int i = 0; i < _renderers.Length; i++)
         {
-            _materials[i] = renderers[i].material;
+            _materials[i] = _renderers[i].material;
         }
 
         SyncShaderParameters();
@@ -39,21 +46,33 @@ public class DissolveController : MonoBehaviour
         {
             UpdateDissolveProgress();
         }
+        else
+        {
+            foreach (var mat in _materials)
+            {
+                if (mat != null) mat.SetFloat("_DissolveAmount", currentDissolveAmount);
+            }
+        }
     }
 
+    [ContextMenu("Start animacji")]
     public void StartDissolve()
     {
+        SetRenderersVisible(true);
         _isDissolving = true;
     }
 
+    [ContextMenu("Zresetuj")]
     public void ResetEffect()
     {
         _isDissolving = false;
-        _currentDissolveAmount = 0f;
+        currentDissolveAmount = 0f;
+
+        SetRenderersVisible(true);
 
         foreach (var mat in _materials)
         {
-            if (mat != null) mat.SetFloat("_DissolveAmount", _currentDissolveAmount);
+            if (mat != null) mat.SetFloat("_DissolveAmount", currentDissolveAmount);
         }
     }
 
@@ -73,18 +92,31 @@ public class DissolveController : MonoBehaviour
 
     private void UpdateDissolveProgress()
     {
-        _currentDissolveAmount += dissolveSpeed * Time.deltaTime;
-        _currentDissolveAmount = Mathf.Clamp01(_currentDissolveAmount);
+        currentDissolveAmount += dissolveSpeed * Time.deltaTime;
+        currentDissolveAmount = Mathf.Clamp01(currentDissolveAmount);
 
         foreach (var mat in _materials)
         {
-            if (mat != null) mat.SetFloat("_DissolveAmount", _currentDissolveAmount);
+            if (mat != null) mat.SetFloat("_DissolveAmount", currentDissolveAmount);
         }
 
-        if (_currentDissolveAmount >= 1.0f)
+        if (currentDissolveAmount >= 1.0f)
         {
             _isDissolving = false;
-            Destroy(gameObject);
+            SetRenderersVisible(false);
+        }
+    }
+
+    private void SetRenderersVisible(bool isVisible)
+    {
+        if (_renderers == null) return;
+
+        foreach (var rend in _renderers)
+        {
+            if (rend != null)
+            {
+                rend.enabled = isVisible;
+            }
         }
     }
 }

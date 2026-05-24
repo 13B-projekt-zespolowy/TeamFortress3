@@ -905,6 +905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!114 &137915576
@@ -999,6 +1000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!23 &146333118
@@ -2055,6 +2057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.175
 --- !u!1 &521220436
@@ -2541,6 +2544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!114 &640652106
@@ -3001,6 +3005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!23 &818942578
@@ -4376,6 +4381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!1 &1287172387
@@ -4907,6 +4913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
+  currentDissolveAmount: 0
   edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!114 &1515650849
@@ -5596,7 +5603,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DissolveController
   dissolveSpeed: 0.5
-  edgeColor: {r: 1, g: 0.5, b: 0, a: 1}
+  currentDissolveAmount: 0
+  edgeColor: {r: 1, g: 0.5019608, b: 0, a: 1}
   edgeThickness: 0.05
 --- !u!1 &1774361547
 GameObject:
