@@ -5,6 +5,8 @@ public class PlayerConnection : NetworkBehaviour
     public static PlayerConnection Local;
     private SyncVar<PlayerClass> selectedClass = new();
 
+    public SyncTimer respawnTimer = new();
+
     [ServerRpc]
     public void ChooseClassServerRpc(PlayerClass chosenClass)
     {
@@ -18,6 +20,9 @@ public class PlayerConnection : NetworkBehaviour
     {
         if (isOwner)
             Local = this;
+
+        if (isServer)
+            respawnTimer.onTimerEnd += Respawn;
     }
 
     protected override void OnDespawned()
@@ -26,8 +31,13 @@ public class PlayerConnection : NetworkBehaviour
             Local = null;
 
         if (isServer)
+        {
+            respawnTimer.onTimerEnd -= Respawn;
             GameManager.Instance.RemovePlayer((PlayerID)owner);
+        }
     }
 
     public PlayerClass GetClass() => selectedClass.value;
+
+    private void Respawn() => GameManager.Instance.RespawnPlayer((PlayerID)owner);
 }
