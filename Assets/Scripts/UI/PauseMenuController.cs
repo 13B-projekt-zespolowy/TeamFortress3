@@ -7,8 +7,13 @@ public class PauseMenuController : MonoBehaviour
     [Header("Input Settings")]
     [SerializeField] private InputActionReference togglePauseAction;
 
+    [Header("UI Panels")]
     public GameObject pauseMenuPanel;
     public GameObject settingsPanel;
+
+    [Header("Gameplay Elements To Dim")]
+    public GameObject[] gameplayUIElements;
+    public float dimmedAlpha = 0.4f;
 
     private bool isMenuOpen = false;
 
@@ -27,6 +32,9 @@ public class PauseMenuController : MonoBehaviour
 
     private void ToggleMenu()
     {
+        if (ChatManager.Instance != null && ChatManager.Instance.IsTyping)
+            return;
+
         if (settingsPanel != null && settingsPanel.activeSelf)
         {
             CloseSettings();
@@ -46,6 +54,19 @@ public class PauseMenuController : MonoBehaviour
         pauseMenuPanel.SetActive(true);
         isMenuOpen = true;
 
+        pauseMenuPanel.transform.SetAsLastSibling();
+        if (settingsPanel != null) settingsPanel.transform.SetAsLastSibling();
+
+        foreach (GameObject ui in gameplayUIElements)
+        {
+            if (ui != null)
+            {
+                CanvasGroup cg = ui.GetComponent<CanvasGroup>();
+                if (cg == null) cg = ui.AddComponent<CanvasGroup>();
+                cg.alpha = dimmedAlpha;
+            }
+        }
+
         InputManager.Instance.SwitchInputMode(InputMode.Ui);
     }
 
@@ -53,6 +74,15 @@ public class PauseMenuController : MonoBehaviour
     {
         pauseMenuPanel.SetActive(false);
         isMenuOpen = false;
+
+        foreach (GameObject ui in gameplayUIElements)
+        {
+            if (ui != null)
+            {
+                CanvasGroup cg = ui.GetComponent<CanvasGroup>();
+                if (cg != null) cg.alpha = 1f;
+            }
+        }
 
         InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
     }

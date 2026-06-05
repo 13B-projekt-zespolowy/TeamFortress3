@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
 {
+    public static ChatManager Instance;
+
     [Header("Input Settings")]
     [SerializeField] private InputActionReference openChatAction;
     [SerializeField] private InputActionReference sendMessageAction;
@@ -14,16 +16,19 @@ public class ChatManager : MonoBehaviour
     public TMP_InputField chatInput;
     public GameObject messagePrefab;
     public Transform messageArea;
-
     public ScrollRect scrollRect;
-
     public float showDuration = 4f;
 
+    public bool IsTyping { get; private set; } = false;
     private float hideTimer = 0f;
-    private bool isTyping = false;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
         openChatAction.action.performed += _ => OpenChat();
         sendMessageAction.action.performed += _ => SendMessageToChat();
         cancelChatAction.action.performed += _ => CancelChat();
@@ -32,14 +37,13 @@ public class ChatManager : MonoBehaviour
     private void Start()
     {
         chatInput.gameObject.SetActive(false);
-
         if (chatPanel != null)
             chatPanel.SetActive(false);
     }
 
     private void Update()
     {
-        if (isTyping)
+        if (IsTyping)
             return;
 
         if (chatPanel != null && chatPanel.activeSelf)
@@ -56,7 +60,7 @@ public class ChatManager : MonoBehaviour
     {
         InputManager.Instance.SwitchInputMode(InputMode.Ui);
 
-        isTyping = true;
+        IsTyping = true;
         chatPanel.SetActive(true);
         chatInput.gameObject.SetActive(true);
         chatInput.ActivateInputField();
@@ -90,7 +94,7 @@ public class ChatManager : MonoBehaviour
 
     private void CloseChatUI()
     {
-        isTyping = false;
+        IsTyping = false;
         chatInput.text = "";
         chatInput.gameObject.SetActive(false);
     }
