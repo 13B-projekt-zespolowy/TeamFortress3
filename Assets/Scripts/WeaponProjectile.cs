@@ -29,7 +29,7 @@ public class WeaponProjectile : NetworkBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
+        if (!isServer || other.isTrigger) return;
 
         if (other.TryGetComponent(out PlayerHealth health))
             health.TakeDamage(_damage);

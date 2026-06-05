@@ -146,6 +146,17 @@ public class PlayerShooter : NetworkBehaviour
         AddAmmoServerRPC(amount);
     }
 
+    public void RefillAmmo()
+    {
+        if (!isServer) return;
+
+        for (int i = 0; i < weaponLoadout.Length; i++)
+        {
+            _mags[i] = weaponLoadout[i].magazineSize;
+            _reserves[i] = weaponLoadout[i].initialReserve;
+        }
+    }
+
     [ServerRpc]
     private void AddAmmoServerRPC(int amount)
     {
