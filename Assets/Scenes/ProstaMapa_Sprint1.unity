@@ -537,7 +537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &66178318
 Transform:
   m_ObjectHideFlags: 0
@@ -1937,6 +1937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b0880b4f323b740a22ad94cbb767c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlagBase
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -1944,8 +1946,6 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   team: 1
 --- !u!1 &501535902
 GameObject:
@@ -5543,6 +5543,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b0880b4f323b740a22ad94cbb767c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlagBase
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -5550,8 +5552,6 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   team: 0
 --- !u!1 &1895421278
 GameObject:
@@ -6713,6 +6713,10 @@ PrefabInstance:
     - target: {fileID: 976777235264811086, guid: fb910622892b08c4abc32b20ba7116b7, type: 3}
       propertyPath: timeRemaining
       value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 976777235264811086, guid: fb910622892b08c4abc32b20ba7116b7, type: 3}
+      propertyPath: timerIsRunning
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7128178668629843473, guid: fb910622892b08c4abc32b20ba7116b7, type: 3}
       propertyPath: m_Name
