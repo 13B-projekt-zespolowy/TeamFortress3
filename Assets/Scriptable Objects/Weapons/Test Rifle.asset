@@ -22,5 +22,6 @@ MonoBehaviour:
   fireRate: 10
   damage: 20
   range: 100
+  shootSound: {fileID: 8300000, guid: 3523e77a21c32c140a48158897f7da7c, type: 3}
   meleeRadius: 0.5
   projectilePrefab: {fileID: 5447330612635458532, guid: 2f3440d1f9c18c249a2a363e79bf6d60, type: 3}

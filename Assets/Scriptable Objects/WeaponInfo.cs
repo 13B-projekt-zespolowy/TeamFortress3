@@ -22,6 +22,7 @@ public class WeaponInfo : ScriptableObject
     public float fireRate = 10f;
     public int damage = 20;
     public float range = 100f;
+    public AudioClip shootSound;
     //public float spread = 0.01f; //TO DO
 
     [Header("Melee")]

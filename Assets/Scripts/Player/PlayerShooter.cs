@@ -232,6 +232,8 @@ public class PlayerShooter : NetworkBehaviour
         if(CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee) 
             CurrentMag--;
 
+        PlayShootSoundObserverRPC();
+
         switch (CurrentWeapon.shootMode)
         {
             case WeaponInfo.ShootMode.Hitscan:
@@ -262,5 +264,17 @@ public class PlayerShooter : NetworkBehaviour
     private void HitscanDebugObserverRPC(Vector3 start, Vector3 end)
     {
         Debug.DrawLine(start, end, Color.yellow, 0.5f);
+    }
+
+    [ObserversRpc]
+    private void PlayShootSoundObserverRPC()
+    {
+        if (CurrentWeapon.shootSound != null)
+        {
+            if (TryGetComponent(out AudioSource playerAudio))
+            {
+                playerAudio.PlayOneShot(CurrentWeapon.shootSound);
+            }
+        }
     }
 }
