@@ -29,6 +29,7 @@ public class PlayerShooter : NetworkBehaviour
     private Quaternion _initialRot;
     private GameObject[] _weaponViewmodels;
     private PlayerVisuals _playerVisuals;
+    private PlayerTeam _playerTeam;
 
     // State
     private SyncVar<int> _activeWeaponIndex = new(0);
@@ -53,6 +54,7 @@ public class PlayerShooter : NetworkBehaviour
     private void Awake()
     {
         _playerVisuals = GetComponent<PlayerVisuals>();
+        _playerTeam = GetComponent<PlayerTeam>();
     }
 
     protected override void OnSpawned()
@@ -227,8 +229,13 @@ public class PlayerShooter : NetworkBehaviour
         if (Physics.Raycast(pos, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
             endPoint = hit.point;
-            if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);
+
+            if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
+                if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
+                    health.TakeDamage(CurrentWeapon.damage);
+
+            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(CurrentWeapon.damage);*/
         }
 
         HitscanDebugObserverRPC(pos, endPoint);
@@ -239,15 +246,19 @@ public class PlayerShooter : NetworkBehaviour
         GameObject proj = Instantiate(CurrentWeapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
 
         if (proj.TryGetComponent(out WeaponProjectile projectileScript))
-            projectileScript.Initialize(CurrentWeapon.damage, GetComponent<Collider>());
+            projectileScript.Initialize(CurrentWeapon.damage, GetComponent<Collider>(), _playerTeam.Team);
     }
 
     private void ShootMelee(Vector3 pos, Vector3 forward)
     {
         if (Physics.SphereCast(pos, CurrentWeapon.meleeRadius, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
-            if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);
+            if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
+                if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
+                    health.TakeDamage(CurrentWeapon.damage);
+
+            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(CurrentWeapon.damage);*/
         }
     }
 

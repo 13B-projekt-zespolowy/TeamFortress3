@@ -1561,6 +1561,14 @@ PrefabInstance:
       propertyPath: spawnPointsRoot
       value: 
       objectReference: {fileID: 382297104}
+    - target: {fileID: 5467481382657197951, guid: fda1f55963835c6459639db46e3c9743, type: 3}
+      propertyPath: redSpawnPointsRoot
+      value: 
+      objectReference: {fileID: 590701991}
+    - target: {fileID: 5467481382657197951, guid: fda1f55963835c6459639db46e3c9743, type: 3}
+      propertyPath: blueSpawnPointsRoot
+      value: 
+      objectReference: {fileID: 382297104}
     - target: {fileID: 6968131114253105636, guid: fda1f55963835c6459639db46e3c9743, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.33572
