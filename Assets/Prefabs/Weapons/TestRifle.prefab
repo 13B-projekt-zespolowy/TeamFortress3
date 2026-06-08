@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3020883205310934159}
   - component: {fileID: 4317587035705585872}
   - component: {fileID: 4980165534372000274}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 565662408438495644}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TestRifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 6749573272236656465}
   - component: {fileID: 1591309596008960196}
   - component: {fileID: 8830811311959036310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 2209000034397905527}
   - component: {fileID: 1262405254973789606}
   - component: {fileID: 3478141434878198800}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
