@@ -30,6 +30,8 @@ public class PlayerController : NetworkBehaviour
 
 
     [Header("Camera Settings")]
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private Transform cameraMimic;
     [SerializeField] private float cameraSensitivity = 20.0f;
     [SerializeField] private float baseCameraHeight = 0.5f;
     [SerializeField] private float crouchCameraHeight = 0f;
@@ -39,6 +41,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference crouchAction;
+
 
     private Vector2 moveInput = Vector2.zero;
     private float cameraHeight;
@@ -50,7 +53,7 @@ public class PlayerController : NetworkBehaviour
     private Vector3 walkMotion = Vector3.zero;
 
     private CharacterController controller;
-    private Camera playerCamera;
+    private PlayerVisuals _playerVisuals;
 
     private Vector3 currentVelocity = Vector3.zero;
 
@@ -70,8 +73,9 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        playerCamera = transform.Find("PlayerCamera").GetComponent<Camera>();
+        if(!playerCamera) playerCamera = transform.Find("PlayerCamera").GetComponent<Camera>();
         controller = GetComponent<CharacterController>();
+        _playerVisuals = GetComponent<PlayerVisuals>();
     }
 
     private void Start()
@@ -89,6 +93,8 @@ public class PlayerController : NetworkBehaviour
         crouchPressed = true;
         controller.height = 1;
         controller.center = new Vector3(0, -0.5f, 0);
+
+        _playerVisuals.SetCrouch(true);
     }
 
     private void StopCrouching()
@@ -103,16 +109,17 @@ public class PlayerController : NetworkBehaviour
         controller.height = 2;
         controller.center = new Vector3(0, 0, 0);
         wantsUncrouch = false;
+
+        _playerVisuals.SetCrouch(false);
     }
 
     protected override void OnSpawned()
     {
-        enabled = isOwner;
-
         if (!isOwner && playerCamera != null)
-        {
             Destroy(playerCamera.gameObject);
-        }
+
+        if (_playerVisuals) _playerVisuals.Init();
+        enabled = isOwner;
     }
 
     private void OnJumpActionPerformed(InputAction.CallbackContext context)
@@ -123,15 +130,20 @@ public class PlayerController : NetworkBehaviour
 
     void MouseLook()
     {
-        Vector2 lookDelta = lookAction.action.ReadValue<Vector2>();
-        rotationX -= lookDelta.y * cameraSensitivity * Time.deltaTime;
+        Vector2 lookDelta = lookAction.action.ReadValue<Vector2>() * cameraSensitivity * Time.deltaTime;
+        rotationX -= lookDelta.y;
         rotationX = Mathf.Clamp(rotationX, -90, 90);
-        transform.Rotate(Vector3.up, lookDelta.x * cameraSensitivity * Time.deltaTime);
+
+        transform.Rotate(Vector3.up, lookDelta.x);
         playerCamera.transform.localEulerAngles = Vector3.right * rotationX;
+
+        if(cameraMimic) cameraMimic.rotation = playerCamera.transform.rotation;
     }
 
     void Motion()
     {
+        bool isGrounded = IsGrounded();
+
         movementType = crouchPressed ? MovementType.Crouching : MovementType.Walking;
         walkMotion = Vector3.zero;
         moveInput = moveAction.action.ReadValue<Vector2>();
@@ -140,8 +152,7 @@ public class PlayerController : NetworkBehaviour
         walkMotion += transform.forward * moveInput.y;
         walkMotion = Vector3.ClampMagnitude(walkMotion, 1.0f);
 
-
-        if (controller.isGrounded)
+        if (isGrounded)
         {
             coyoteTimer = coyoteTime;
         }
@@ -165,29 +176,31 @@ public class PlayerController : NetworkBehaviour
             coyoteTimer = 0f;
             jumpBufferTimer = 0f;
             pendingJump = false;
+
+            if (_playerVisuals) _playerVisuals.PlayJump();
         }
 
 
-        if (!controller.isGrounded)
+        if (!isGrounded)
         {
             jumpVelocity += gravity * Time.deltaTime;
         }
 
-        if (controller.isGrounded && jumpVelocity.y < 0)
+        if (isGrounded && jumpVelocity.y < 0)
         {
             jumpVelocity = Vector3.zero;
         }
 
+        if(_playerVisuals) _playerVisuals.SetGrounded(isGrounded);
+
         float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
-
-
 
         Vector3 targetVelocity = walkMotion * movementSpeed;
 
         float dot = Vector3.Dot(currentVelocity.normalized, targetVelocity.normalized);
         float directionMultiplier = dot < 0 ? directionChangeMultiplier : 1f;
 
-        float accel = controller.isGrounded
+        float accel = isGrounded
             ? (targetVelocity.magnitude > 0.01f ? groundAcceleration : groundDeceleration)
             : airAcceleration;
 
@@ -201,7 +214,9 @@ public class PlayerController : NetworkBehaviour
         var finalMove = currentVelocity + jumpVelocity;
         controller.Move(finalMove * Time.deltaTime);
 
-
+        float forwards = Vector3.Dot(currentVelocity.normalized, transform.forward);
+        float sideways = Vector3.Dot(currentVelocity.normalized, transform.right);
+        if (_playerVisuals) _playerVisuals.SetMovement(forwards, sideways);
     }
 
     private void Update()
@@ -210,6 +225,16 @@ public class PlayerController : NetworkBehaviour
         MouseLook();
         HandleUncrouching();
         Motion();
+    }
+
+    private bool IsGrounded()
+    {
+        if (controller.isGrounded) return true;
+
+        float sphereRadius = controller.radius * 0.9f;
+        float castDistance = (controller.height / 2f) - sphereRadius + 0.01f + controller.skinWidth;
+
+        return Physics.SphereCast(controller.bounds.center, sphereRadius, Vector3.down, out _, castDistance);
     }
 
     private void UpdateCameraHeight()

@@ -1,6 +1,4 @@
 using PurrNet;
-using System;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,6 +28,7 @@ public class PlayerShooter : NetworkBehaviour
 
     private Quaternion _initialRot;
     private GameObject[] _weaponViewmodels;
+    private PlayerVisuals _playerVisuals;
 
     // State
     private SyncVar<int> _activeWeaponIndex = new(0);
@@ -37,6 +36,7 @@ public class PlayerShooter : NetworkBehaviour
     private SyncList<int> _reserves = new();
     private float _nextFireTime;
     private bool _isReloading;
+    private float _reloadEndTime;
 
     public WeaponInfo CurrentWeapon => weaponLoadout[_activeWeaponIndex.value];
     public int CurrentMag
@@ -48,6 +48,11 @@ public class PlayerShooter : NetworkBehaviour
     {
         get => _reserves[_activeWeaponIndex.value];
         set => _reserves[_activeWeaponIndex.value] = value;
+    }
+
+    private void Awake()
+    {
+        _playerVisuals = GetComponent<PlayerVisuals>();
     }
 
     protected override void OnSpawned()
@@ -70,28 +75,55 @@ public class PlayerShooter : NetworkBehaviour
                     _weaponViewmodels[i] = Instantiate(weaponLoadout[i].viewmodel, viewModelParent);
             }
             if(WeaponSwitchUI.Instance) WeaponSwitchUI.Instance.Initialize(weaponLoadout);
-            UpdateWeaponVisual(_activeWeaponIndex);
 
             _initialRot = viewModelParent.localRotation;
             switchWeaponAction.action.performed += HandleWeaponSwitch;
-            _activeWeaponIndex.onChanged += SwitchWeaponLocal;
+            if (!_playerVisuals)
+            {
+                UpdateWeaponVisual(_activeWeaponIndex);
+                _activeWeaponIndex.onChanged += SwitchWeaponLocal;
+            }
         }
+
+        if(_playerVisuals) _activeWeaponIndex.onChanged += _playerVisuals.SwitchWeapon;
     }
 
     protected override void OnDespawned()
     {
         if (isOwner)
+        {
             switchWeaponAction.action.performed -= HandleWeaponSwitch;
+            if(!_playerVisuals) _activeWeaponIndex.onChanged -= SwitchWeaponLocal;
+        }
+
+        if (_playerVisuals) _activeWeaponIndex.onChanged -= _playerVisuals.SwitchWeapon;
     }
 
     void Update()
     {
+        if (isServer && _isReloading && Time.time >= _reloadEndTime)
+        {
+            _isReloading = false;
+
+            int needed = CurrentWeapon.magazineSize - CurrentMag;
+            int transfer = Mathf.Min(needed, CurrentReserve);
+
+            CurrentMag += transfer;
+            CurrentReserve -= transfer;
+        }
+
         if (!isOwner) return;
         HandleSway();
 
-        if ( (CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
-             (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()) )
-            TryShoot();
+        if (!isServer && _isReloading && Time.time >= _reloadEndTime)
+            _isReloading = false;
+
+        if (!_isReloading)
+        {
+            if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
+                 (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()))
+                TryShoot();
+        }
 
         if (reloadAction.action.WasPressedThisFrame())
             TryReload();
@@ -107,7 +139,10 @@ public class PlayerShooter : NetworkBehaviour
             else if (switchInput > 0) newIndex = (newIndex - 1 + weaponLoadout.Length) % weaponLoadout.Length;
 
             if (newIndex != _activeWeaponIndex.value)
+            {
+                _isReloading = false;
                 SwitchWeaponServerRPC(newIndex);
+            }
         }
     }
 
@@ -138,6 +173,7 @@ public class PlayerShooter : NetworkBehaviour
 
         _nextFireTime = Time.time + (1f / CurrentWeapon.fireRate);
         Debug.Log($"Magazine: {CurrentMag} | Reserve: {CurrentReserve}");
+        if (_playerVisuals) _playerVisuals.PlayAttack();
         ShootServerRPC((CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile) ? firePoint.position : playerCamera.position, playerCamera.forward);
     }
     
@@ -155,6 +191,7 @@ public class PlayerShooter : NetworkBehaviour
             _mags[i] = weaponLoadout[i].magazineSize;
             _reserves[i] = weaponLoadout[i].initialReserve;
         }
+        _activeWeaponIndex.value = 0;
     }
 
     [ServerRpc]
@@ -176,12 +213,12 @@ public class PlayerShooter : NetworkBehaviour
     {
         if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
 
-        /*int needed = weapon.magazineSize - _currentMag;
-        int transfer = Mathf.Min(needed, _currentReserve);
+        _isReloading = true;
+        _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
 
-        _currentMag += transfer;
-        _currentReserve -= transfer;*/
-        ReloadServerRPC();
+        if (_playerVisuals) _playerVisuals.PlayReload();
+
+        StartReloadServerRPC();
     }
 
     private void ShootHitscan(Vector3 pos, Vector3 forward)
@@ -246,7 +283,7 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    /*[ServerRpc]
     private void ReloadServerRPC()
     {
         if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
@@ -256,6 +293,15 @@ public class PlayerShooter : NetworkBehaviour
 
         CurrentMag += transfer;
         CurrentReserve -= transfer;
+    }*/
+
+    [ServerRpc]
+    private void StartReloadServerRPC()
+    {
+        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+
+        _isReloading = true;
+        _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
     }
 
     [ObserversRpc]

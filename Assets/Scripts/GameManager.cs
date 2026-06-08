@@ -107,6 +107,7 @@ public class GameManager : NetworkBehaviour
         health.RefillHealth();
         shooter.RefillAmmo();
         playerObject.gameObject.SetActive(true);
+        if (playerObject.TryGetComponent(out PlayerVisuals visuals)) visuals.SwitchWeapon(0);
     }
 
     private Transform GetSpawnPoint()
