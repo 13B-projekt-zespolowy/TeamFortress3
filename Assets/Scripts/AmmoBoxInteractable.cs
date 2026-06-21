@@ -6,6 +6,7 @@ public class AmmoBoxInteractable : ContactInteractable
 
     public override InteractionResultAction OnInteractedWith(GameObject sender)
     {
+        Debug.Log("CONTACT!");
         if (!sender.TryGetComponent(out PlayerShooter shooter)) return InteractionResultAction.None;
         shooter.AddAmmo(ammoBonus);
         return InteractionResultAction.Destroy;
