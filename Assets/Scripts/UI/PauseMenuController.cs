@@ -32,9 +32,7 @@ public class PauseMenuController : MonoBehaviour
 
     private void ToggleMenu()
     {
-        if (ChatManager.Instance != null && ChatManager.Instance.IsTyping)
-            return;
-
+        
         if (settingsPanel != null && settingsPanel.activeSelf)
         {
             CloseSettings();

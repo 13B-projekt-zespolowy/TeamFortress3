@@ -1,5 +1,6 @@
 using PurrNet;
 using UnityEngine;
+using System;
 
 public abstract class ContactInteractable : NetworkBehaviour
 {
@@ -8,6 +9,9 @@ public abstract class ContactInteractable : NetworkBehaviour
         None,
         Destroy
     }
+    
+    // Event that gets emitted when the object is destroyed
+    public event Action<GameObject> OnDestroyed;
     
     public abstract InteractionResultAction OnInteractedWith(GameObject sender);
 
@@ -20,6 +24,8 @@ public abstract class ContactInteractable : NetworkBehaviour
             case InteractionResultAction.None:
                 return;
             case InteractionResultAction.Destroy:
+                // Emit the event before destroying
+                OnDestroyed?.Invoke(sender);
                 Destroy(gameObject);
                 return;
         }

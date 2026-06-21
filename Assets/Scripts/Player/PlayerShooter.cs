@@ -29,28 +29,33 @@ public class PlayerShooter : NetworkBehaviour
 
     private Quaternion _initialRot;
     private GameObject[] _weaponViewmodels;
+    private PlayerVisuals _playerVisuals;
+    private PlayerTeam _playerTeam;
 
+    // State
     private SyncVar<int> _activeWeaponIndex = new(0);
     private SyncList<int> _mags = new();
     private SyncList<int> _reserves = new();
     private float _nextFireTime;
     private bool _isReloading;
+    private float _reloadEndTime;
 
-    private int _lastMag = -1;
-    private int _lastReserve = -1;
-
-    public WeaponInfo CurrentWeapon => weaponLoadout.Length > _activeWeaponIndex.value ? weaponLoadout[_activeWeaponIndex.value] : null;
-
+    public WeaponInfo CurrentWeapon => weaponLoadout[_activeWeaponIndex.value];
     public int CurrentMag
-    {
-        get => _mags.Count > _activeWeaponIndex.value ? _mags[_activeWeaponIndex.value] : 0;
-        set { if (_mags.Count > _activeWeaponIndex.value) _mags[_activeWeaponIndex.value] = value; }
+    { 
+        get => _mags[_activeWeaponIndex.value];
+        set => _mags[_activeWeaponIndex.value] = value;
     }
-
     public int CurrentReserve
     {
-        get => _reserves.Count > _activeWeaponIndex.value ? _reserves[_activeWeaponIndex.value] : 0;
-        set { if (_reserves.Count > _activeWeaponIndex.value) _reserves[_activeWeaponIndex.value] = value; }
+        get => _reserves[_activeWeaponIndex.value];
+        set => _reserves[_activeWeaponIndex.value] = value;
+    }
+
+    private void Awake()
+    {
+        _playerVisuals = GetComponent<PlayerVisuals>();
+        _playerTeam = GetComponent<PlayerTeam>();
     }
 
     protected override void OnSpawned()
@@ -72,51 +77,59 @@ public class PlayerShooter : NetworkBehaviour
                 if (weaponLoadout[i].viewmodel)
                     _weaponViewmodels[i] = Instantiate(weaponLoadout[i].viewmodel, viewModelParent);
             }
-
-            if (WeaponSwitchUI.Instance)
-            {
-                WeaponSwitchUI.Instance.Initialize(weaponLoadout);
-                WeaponSwitchUI.Instance.EnableGameplayHUD();
-                WeaponSwitchUI.Instance.ShowUI(_activeWeaponIndex.value); 
-            }
-
-            UpdateWeaponVisual(_activeWeaponIndex);
+            if(WeaponSwitchUI.Instance) WeaponSwitchUI.Instance.Initialize(weaponLoadout);
 
             _initialRot = viewModelParent.localRotation;
             switchWeaponAction.action.performed += HandleWeaponSwitch;
-            _activeWeaponIndex.onChanged += SwitchWeaponLocal;
+            if (!_playerVisuals)
+            {
+                UpdateWeaponVisual(_activeWeaponIndex);
+                _activeWeaponIndex.onChanged += SwitchWeaponLocal;
+            }
         }
+
+        if(_playerVisuals) _activeWeaponIndex.onChanged += _playerVisuals.SwitchWeapon;
     }
 
     protected override void OnDespawned()
     {
         if (isOwner)
+        {
             switchWeaponAction.action.performed -= HandleWeaponSwitch;
+            if(!_playerVisuals) _activeWeaponIndex.onChanged -= SwitchWeaponLocal;
+        }
+
+        if (_playerVisuals) _activeWeaponIndex.onChanged -= _playerVisuals.SwitchWeapon;
     }
 
     void Update()
     {
-        if (!isOwner || CurrentWeapon == null || _mags.Count == 0 || _reserves.Count == 0) return;
-
-        HandleSway();
-
-        if (_lastMag != CurrentMag || _lastReserve != CurrentReserve)
+        if (isServer && _isReloading && Time.time >= _reloadEndTime)
         {
-            _lastMag = CurrentMag;
-            _lastReserve = CurrentReserve;
-            RefreshAmmoUI();
+            _isReloading = false;
+
+            int needed = CurrentWeapon.magazineSize - CurrentMag;
+            int transfer = Mathf.Min(needed, CurrentReserve);
+
+            CurrentMag += transfer;
+            CurrentReserve -= transfer;
         }
 
-        if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
-            (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()))
+        if (!isOwner) return;
+        HandleSway();
+
+        if (!isServer && _isReloading && Time.time >= _reloadEndTime)
+            _isReloading = false;
+
+        if (!_isReloading)
         {
-            TryShoot();
+            if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
+                 (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()))
+                TryShoot();
         }
 
         if (reloadAction.action.WasPressedThisFrame())
-        {
             TryReload();
-        }
     }
 
     public void HandleWeaponSwitch(InputAction.CallbackContext context)
@@ -129,18 +142,17 @@ public class PlayerShooter : NetworkBehaviour
             else if (switchInput > 0) newIndex = (newIndex - 1 + weaponLoadout.Length) % weaponLoadout.Length;
 
             if (newIndex != _activeWeaponIndex.value)
+            {
+                _isReloading = false;
                 SwitchWeaponServerRPC(newIndex);
+            }
         }
     }
 
     private void SwitchWeaponLocal(int newIndex)
     {
         UpdateWeaponVisual(newIndex);
-
-        if (WeaponSwitchUI.Instance)
-            WeaponSwitchUI.Instance.ShowUI(newIndex);
-
-        _lastMag = -1;
+        if (WeaponSwitchUI.Instance) WeaponSwitchUI.Instance.ShowUI(newIndex);
     }
 
     private void UpdateWeaponVisual(int newIndex)
@@ -152,32 +164,37 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
-    private void RefreshAmmoUI()
-    {
-        if (WeaponSwitchUI.Instance)
-        {
-            bool isMelee = CurrentWeapon.shootMode == WeaponInfo.ShootMode.Melee;
-            WeaponSwitchUI.Instance.UpdateAmmo(CurrentMag, CurrentReserve, isMelee);
-        }
-    }
-
     public void TryShoot()
     {
-        if (!isOwner || _isReloading || Time.time < _nextFireTime || CurrentWeapon == null) return;
+        if (!isOwner || _isReloading || Time.time < _nextFireTime) return;
 
-        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee && CurrentMag <= 0)
+        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee && _mags[_activeWeaponIndex.value] <= 0)
         {
             TryReload();
             return;
         }
 
         _nextFireTime = Time.time + (1f / CurrentWeapon.fireRate);
+        Debug.Log($"Magazine: {CurrentMag} | Reserve: {CurrentReserve}");
+        if (_playerVisuals) _playerVisuals.PlayAttack();
         ShootServerRPC((CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile) ? firePoint.position : playerCamera.position, playerCamera.forward);
     }
-
+    
     public void AddAmmo(int amount)
     {
         AddAmmoServerRPC(amount);
+    }
+
+    public void RefillAmmo()
+    {
+        if (!isServer) return;
+
+        for (int i = 0; i < weaponLoadout.Length; i++)
+        {
+            _mags[i] = weaponLoadout[i].magazineSize;
+            _reserves[i] = weaponLoadout[i].initialReserve;
+        }
+        _activeWeaponIndex.value = 0;
     }
 
     [ServerRpc]
@@ -197,20 +214,29 @@ public class PlayerShooter : NetworkBehaviour
 
     private void TryReload()
     {
-        if (_isReloading || CurrentWeapon == null || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
 
-        ReloadServerRPC();
+        _isReloading = true;
+        _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
+
+        if (_playerVisuals) _playerVisuals.PlayReload();
+
+        StartReloadServerRPC();
     }
 
     private void ShootHitscan(Vector3 pos, Vector3 forward)
     {
-        if (CurrentWeapon == null) return;
         Vector3 endPoint = pos + (forward * CurrentWeapon.range);
         if (Physics.Raycast(pos, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
             endPoint = hit.point;
-            if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);
+
+            if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
+                if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
+                    health.TakeDamage(CurrentWeapon.damage);
+
+            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(CurrentWeapon.damage);*/
         }
 
         HitscanDebugObserverRPC(pos, endPoint);
@@ -218,20 +244,22 @@ public class PlayerShooter : NetworkBehaviour
 
     private void ShootProjectile(Vector3 pos, Vector3 forward)
     {
-        if (CurrentWeapon == null) return;
         GameObject proj = Instantiate(CurrentWeapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
 
         if (proj.TryGetComponent(out WeaponProjectile projectileScript))
-            projectileScript.Initialize(CurrentWeapon.damage, GetComponent<Collider>());
+            projectileScript.Initialize(CurrentWeapon.damage, GetComponent<Collider>(), _playerTeam.Team);
     }
 
     private void ShootMelee(Vector3 pos, Vector3 forward)
     {
-        if (CurrentWeapon == null) return;
         if (Physics.SphereCast(pos, CurrentWeapon.meleeRadius, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
-            if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);
+            if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
+                if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
+                    health.TakeDamage(CurrentWeapon.damage);
+
+            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
+                health.TakeDamage(CurrentWeapon.damage);*/
         }
     }
 
@@ -240,7 +268,7 @@ public class PlayerShooter : NetworkBehaviour
         Vector2 delta = lookAction.action.ReadValue<Vector2>();
 
         Quaternion targetRot = _initialRot * Quaternion.Euler(
-            Mathf.Clamp(delta.y * swayAmount, swayMinMax.x, swayMinMax.y),
+            Mathf.Clamp(delta.y * swayAmount, swayMinMax.x, swayMinMax.y), 
             Mathf.Clamp(-delta.x * swayAmount, swayMinMax.x, swayMinMax.y), 0);
 
         viewModelParent.localRotation = Quaternion.Slerp(viewModelParent.localRotation, targetRot, Time.deltaTime * swaySmooth);
@@ -249,10 +277,11 @@ public class PlayerShooter : NetworkBehaviour
     [ServerRpc]
     private void ShootServerRPC(Vector3 pos, Vector3 forward)
     {
-        if (CurrentWeapon == null) return;
-
-        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee)
+        //if (_isReloading || Time.time < _nextFireTime) return;
+        if(CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee) 
             CurrentMag--;
+
+        PlayShootSoundObserverRPC();
 
         switch (CurrentWeapon.shootMode)
         {
@@ -268,21 +297,42 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    /*[ServerRpc]
     private void ReloadServerRPC()
     {
-        if (_isReloading || CurrentWeapon == null || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
 
         int needed = CurrentWeapon.magazineSize - CurrentMag;
         int transfer = Mathf.Min(needed, CurrentReserve);
 
         CurrentMag += transfer;
         CurrentReserve -= transfer;
+    }*/
+
+    [ServerRpc]
+    private void StartReloadServerRPC()
+    {
+        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+
+        _isReloading = true;
+        _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
     }
 
     [ObserversRpc]
     private void HitscanDebugObserverRPC(Vector3 start, Vector3 end)
     {
         Debug.DrawLine(start, end, Color.yellow, 0.5f);
+    }
+
+    [ObserversRpc]
+    private void PlayShootSoundObserverRPC()
+    {
+        if (CurrentWeapon.shootSound != null)
+        {
+            if (TryGetComponent(out AudioSource playerAudio))
+            {
+                playerAudio.PlayOneShot(CurrentWeapon.shootSound);
+            }
+        }
     }
 }

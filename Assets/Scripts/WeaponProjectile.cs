@@ -8,10 +8,12 @@ public class WeaponProjectile : NetworkBehaviour
     public float lifetime = 5f;
 
     private int _damage;
+    private Team _shooterTeam;
 
-    public void Initialize(int damage, Collider shooterCollider)
+    public void Initialize(int damage, Collider shooterCollider, Team shooterTeam)
     {
         _damage = damage;
+        _shooterTeam = shooterTeam;
         if (TryGetComponent<Collider>(out var collider) && shooterCollider != null)
             Physics.IgnoreCollision(collider, shooterCollider);
     }
@@ -29,10 +31,14 @@ public class WeaponProjectile : NetworkBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
+        if (!isServer || other.isTrigger) return;
 
-        if (other.TryGetComponent(out PlayerHealth health))
-            health.TakeDamage(_damage);
+        if (other.TryGetComponent(out PlayerHealth health) && other.TryGetComponent(out PlayerTeam targetTeam))
+            if (_shooterTeam != targetTeam.Team)
+                health.TakeDamage(_damage);
+
+        /*if (other.TryGetComponent(out PlayerHealth health))
+            health.TakeDamage(_damage);*/
 
         Destroy(gameObject);
     }

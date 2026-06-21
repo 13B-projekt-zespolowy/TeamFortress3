@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 public class ClassSelectUI : MonoBehaviour
 {
-    [SerializeField] private GameObject sceneCamera;
-
     [SerializeField] private GameObject uiPanel;
     [SerializeField] private InputActionReference toggleAction;
 
@@ -40,6 +38,7 @@ public class ClassSelectUI : MonoBehaviour
     {
         if (!PlayerConnection.Local) return;
 
+        GameObject sceneCamera = GameManager.Instance.GetSceneCamera();
         if (sceneCamera && PlayerConnection.Local.GetClass() == null)
             sceneCamera.SetActive(false);
 

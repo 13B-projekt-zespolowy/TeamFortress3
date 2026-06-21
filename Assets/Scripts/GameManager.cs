@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class GameManager : NetworkBehaviour
 {
-    [SerializeField] private Transform spawnPointsRoot;
+    [SerializeField] private GameObject sceneCamera;
+    //[SerializeField] private Transform spawnPointsRoot;
+    [SerializeField] private Transform redSpawnPointsRoot;
+    [SerializeField] private Transform blueSpawnPointsRoot;
+    [SerializeField] private float respawnTime = 5f;
 
     public static GameManager Instance;
     private Dictionary<PlayerID, PlayerSession> sessions = new();
@@ -34,7 +38,9 @@ public class GameManager : NetworkBehaviour
         PlayerClass playerClass = session.connection.GetClass();
         if (playerClass == null || playerClass.playerPrefab == null) return;
 
-        Transform spawnPoint = GetSpawnPoint();
+        Team assignedTeam = GetBalancedTeam();
+
+        Transform spawnPoint = GetSpawnPoint(assignedTeam);
         Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
         Quaternion spawnRot = (spawnPoint) ? spawnPoint.rotation : Quaternion.identity;
 
@@ -50,21 +56,40 @@ public class GameManager : NetworkBehaviour
             identity.GiveOwnership(player);
             session.playerObject = identity;
 
+            if (obj.TryGetComponent(out PlayerTeam pTeam))
+                pTeam.InitializeTeam(assignedTeam);
+
             if (obj.TryGetComponent(out PlayerHealth health))
                 health.Initialize(playerClass.maxHealth);
         }
     }
 
-    public void RespawnPlayer(PlayerID player, GameObject playerObject)
+    public void StartRespawnCountdown(PlayerID player)
     {
         if (!isServer) return;
 
-        Transform spawnPoint = GetSpawnPoint();
-        Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
-        Quaternion spawnRot = (spawnPoint) ? spawnPoint.rotation : Quaternion.identity;
+        if (sessions.TryGetValue(player, out PlayerSession session))
+            session.connection.respawnTimer.StartTimer(respawnTime);
+    }
 
-        if (playerObject.TryGetComponent(out PlayerHealth health))
-            health.RespawnSnapRpc(spawnPos, spawnRot);
+    public void RespawnPlayer(PlayerID player)
+    {
+        if (!isServer) return;
+
+        if (sessions.TryGetValue(player, out PlayerSession session) && session.playerObject != null)
+        {
+            NetworkIdentity playerObject = session.playerObject;
+
+            Team team = Team.Red;
+            if (playerObject.TryGetComponent(out PlayerTeam pt)) 
+                team = pt.Team;
+
+            Transform spawnPoint = GetSpawnPoint(team);
+            Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
+            Quaternion spawnRot = (spawnPoint) ? spawnPoint.rotation : Quaternion.identity;
+
+            RespawnPlayerRpc(playerObject, spawnPos, spawnRot);
+        }
     }
 
     public void RemovePlayer(PlayerID player)
@@ -78,10 +103,50 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private Transform GetSpawnPoint()
+    public GameObject GetSceneCamera() => sceneCamera;
+
+    [ObserversRpc]
+    private void RespawnPlayerRpc(NetworkIdentity playerObject, Vector3 position, Quaternion rotation)
+    {
+        if (!playerObject.TryGetComponent(out PlayerHealth health) || !playerObject.TryGetComponent(out PlayerShooter shooter)) return;
+
+        Transform playerTransform = playerObject.transform;
+
+        playerTransform.position = position;
+        playerTransform.rotation = rotation;
+
+        health.RefillHealth();
+        shooter.RefillAmmo();
+        playerObject.gameObject.SetActive(true);
+        if (playerObject.TryGetComponent(out PlayerVisuals visuals)) visuals.SwitchWeapon(0);
+    }
+
+    private Team GetBalancedTeam()
+    {
+        int red = 0, blue = 0;
+        foreach (var session in sessions.Values)
+        {
+            if (session.playerObject != null && session.playerObject.TryGetComponent(out PlayerTeam pt))
+            {
+                if (pt.Team == Team.Red) 
+                    red++;
+                else 
+                    blue++;
+            }
+        }
+        return red <= blue ? Team.Red : Team.Blue;
+    }
+
+    private Transform GetSpawnPoint(Team team)
+    {
+        Transform root = team == Team.Red ? redSpawnPointsRoot : blueSpawnPointsRoot;
+        return root ? root.GetChild(Random.Range(0, root.childCount)) : null;
+    }
+
+    /*private Transform GetSpawnPoint()
     {
         return spawnPointsRoot ? spawnPointsRoot.GetChild(Random.Range(0, spawnPointsRoot.childCount)) : null;
-    }
+    }*/
 }
 
 class PlayerSession
