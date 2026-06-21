@@ -7627,7 +7627,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 976777235264811086, guid: fb910622892b08c4abc32b20ba7116b7, type: 3}
       propertyPath: timerIsRunning
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7128178668629843473, guid: fb910622892b08c4abc32b20ba7116b7, type: 3}
       propertyPath: m_Name
