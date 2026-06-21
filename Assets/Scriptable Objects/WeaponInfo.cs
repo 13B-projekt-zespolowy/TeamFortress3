@@ -16,7 +16,7 @@ public class WeaponInfo : ScriptableObject
     [Header("Ammo")]
     public int magazineSize = 30;
     public int initialReserve = 90;
-    //public float reloadTime = 2f; //TO DO
+    public float reloadTime = 2f;
 
     [Header("Shooting")]
     public float fireRate = 10f;

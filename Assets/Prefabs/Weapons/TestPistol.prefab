@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8658157079684567323}
   - component: {fileID: 6700742075261866969}
   - component: {fileID: 2966060079039058501}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 6460881857341724572}
   - component: {fileID: 5647131881078045908}
   - component: {fileID: 444196615246800838}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3441372274754526676}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TestPistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
