@@ -1772,11 +1772,23 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 352730349}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &372154817 stripped
+--- !u!1 &372154817
 GameObject:
+  m_ObjectHideFlags: 8
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c4ab866e1f5d9f847aaef1e6c2b255ea, type: 3}
   m_PrefabInstance: {fileID: 718220694}
   m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 372154818}
+  - component: {fileID: 372154820}
+  m_Layer: 0
+  m_Name: 'ammo_box (Missing Prefab with guid: c4ab866e1f5d9f847aaef1e6c2b255ea)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!114 &372154818
 MonoBehaviour:
   m_ObjectHideFlags: 0
