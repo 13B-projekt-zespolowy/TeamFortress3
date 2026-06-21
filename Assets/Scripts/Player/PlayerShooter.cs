@@ -32,7 +32,6 @@ public class PlayerShooter : NetworkBehaviour
     private PlayerVisuals _playerVisuals;
     private PlayerTeam _playerTeam;
 
-    // State
     private SyncVar<int> _activeWeaponIndex = new(0);
     private SyncList<int> _mags = new();
     private SyncList<int> _reserves = new();
@@ -40,16 +39,21 @@ public class PlayerShooter : NetworkBehaviour
     private bool _isReloading;
     private float _reloadEndTime;
 
-    public WeaponInfo CurrentWeapon => weaponLoadout[_activeWeaponIndex.value];
+    private int _lastMag = -1;
+    private int _lastReserve = -1;
+
+    public WeaponInfo CurrentWeapon => weaponLoadout.Length > _activeWeaponIndex.value ? weaponLoadout[_activeWeaponIndex.value] : null;
+
     public int CurrentMag
-    { 
-        get => _mags[_activeWeaponIndex.value];
-        set => _mags[_activeWeaponIndex.value] = value;
+    {
+        get => _mags.Count > _activeWeaponIndex.value ? _mags[_activeWeaponIndex.value] : 0;
+        set { if (_mags.Count > _activeWeaponIndex.value) _mags[_activeWeaponIndex.value] = value; }
     }
+
     public int CurrentReserve
     {
-        get => _reserves[_activeWeaponIndex.value];
-        set => _reserves[_activeWeaponIndex.value] = value;
+        get => _reserves.Count > _activeWeaponIndex.value ? _reserves[_activeWeaponIndex.value] : 0;
+        set { if (_reserves.Count > _activeWeaponIndex.value) _reserves[_activeWeaponIndex.value] = value; }
     }
 
     private void Awake()
@@ -77,18 +81,25 @@ public class PlayerShooter : NetworkBehaviour
                 if (weaponLoadout[i].viewmodel)
                     _weaponViewmodels[i] = Instantiate(weaponLoadout[i].viewmodel, viewModelParent);
             }
-            if(WeaponSwitchUI.Instance) WeaponSwitchUI.Instance.Initialize(weaponLoadout);
+
+            if (WeaponSwitchUI.Instance)
+            {
+                WeaponSwitchUI.Instance.Initialize(weaponLoadout);
+                WeaponSwitchUI.Instance.EnableGameplayHUD();
+                WeaponSwitchUI.Instance.ShowUI(_activeWeaponIndex.value);
+            }
 
             _initialRot = viewModelParent.localRotation;
             switchWeaponAction.action.performed += HandleWeaponSwitch;
+
             if (!_playerVisuals)
             {
-                UpdateWeaponVisual(_activeWeaponIndex);
+                UpdateWeaponVisual(_activeWeaponIndex.value);
                 _activeWeaponIndex.onChanged += SwitchWeaponLocal;
             }
         }
 
-        if(_playerVisuals) _activeWeaponIndex.onChanged += _playerVisuals.SwitchWeapon;
+        if (_playerVisuals) _activeWeaponIndex.onChanged += _playerVisuals.SwitchWeapon;
     }
 
     protected override void OnDespawned()
@@ -96,7 +107,7 @@ public class PlayerShooter : NetworkBehaviour
         if (isOwner)
         {
             switchWeaponAction.action.performed -= HandleWeaponSwitch;
-            if(!_playerVisuals) _activeWeaponIndex.onChanged -= SwitchWeaponLocal;
+            if (!_playerVisuals) _activeWeaponIndex.onChanged -= SwitchWeaponLocal;
         }
 
         if (_playerVisuals) _activeWeaponIndex.onChanged -= _playerVisuals.SwitchWeapon;
@@ -104,6 +115,8 @@ public class PlayerShooter : NetworkBehaviour
 
     void Update()
     {
+        if (CurrentWeapon == null || _mags.Count == 0 || _reserves.Count == 0) return;
+
         if (isServer && _isReloading && Time.time >= _reloadEndTime)
         {
             _isReloading = false;
@@ -116,7 +129,15 @@ public class PlayerShooter : NetworkBehaviour
         }
 
         if (!isOwner) return;
+
         HandleSway();
+
+        if (_lastMag != CurrentMag || _lastReserve != CurrentReserve)
+        {
+            _lastMag = CurrentMag;
+            _lastReserve = CurrentReserve;
+            RefreshAmmoUI();
+        }
 
         if (!isServer && _isReloading && Time.time >= _reloadEndTime)
             _isReloading = false;
@@ -125,7 +146,9 @@ public class PlayerShooter : NetworkBehaviour
         {
             if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
                  (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()))
+            {
                 TryShoot();
+            }
         }
 
         if (reloadAction.action.WasPressedThisFrame())
@@ -152,7 +175,11 @@ public class PlayerShooter : NetworkBehaviour
     private void SwitchWeaponLocal(int newIndex)
     {
         UpdateWeaponVisual(newIndex);
-        if (WeaponSwitchUI.Instance) WeaponSwitchUI.Instance.ShowUI(newIndex);
+
+        if (WeaponSwitchUI.Instance)
+            WeaponSwitchUI.Instance.ShowUI(newIndex);
+
+        _lastMag = -1;
     }
 
     private void UpdateWeaponVisual(int newIndex)
@@ -164,22 +191,32 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
+    private void RefreshAmmoUI()
+    {
+        if (WeaponSwitchUI.Instance)
+        {
+            bool isMelee = CurrentWeapon.shootMode == WeaponInfo.ShootMode.Melee;
+            WeaponSwitchUI.Instance.UpdateAmmo(CurrentMag, CurrentReserve, isMelee);
+        }
+    }
+
     public void TryShoot()
     {
-        if (!isOwner || _isReloading || Time.time < _nextFireTime) return;
+        if (!isOwner || _isReloading || Time.time < _nextFireTime || CurrentWeapon == null) return;
 
-        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee && _mags[_activeWeaponIndex.value] <= 0)
+        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee && CurrentMag <= 0)
         {
             TryReload();
             return;
         }
 
         _nextFireTime = Time.time + (1f / CurrentWeapon.fireRate);
-        Debug.Log($"Magazine: {CurrentMag} | Reserve: {CurrentReserve}");
+
         if (_playerVisuals) _playerVisuals.PlayAttack();
+
         ShootServerRPC((CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile) ? firePoint.position : playerCamera.position, playerCamera.forward);
     }
-    
+
     public void AddAmmo(int amount)
     {
         AddAmmoServerRPC(amount);
@@ -214,7 +251,7 @@ public class PlayerShooter : NetworkBehaviour
 
     private void TryReload()
     {
-        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+        if (_isReloading || CurrentWeapon == null || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
 
         _isReloading = true;
         _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
@@ -226,6 +263,7 @@ public class PlayerShooter : NetworkBehaviour
 
     private void ShootHitscan(Vector3 pos, Vector3 forward)
     {
+        if (CurrentWeapon == null) return;
         Vector3 endPoint = pos + (forward * CurrentWeapon.range);
         if (Physics.Raycast(pos, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
@@ -234,9 +272,6 @@ public class PlayerShooter : NetworkBehaviour
             if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
                 if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
                     health.TakeDamage(CurrentWeapon.damage);
-
-            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);*/
         }
 
         HitscanDebugObserverRPC(pos, endPoint);
@@ -244,6 +279,7 @@ public class PlayerShooter : NetworkBehaviour
 
     private void ShootProjectile(Vector3 pos, Vector3 forward)
     {
+        if (CurrentWeapon == null) return;
         GameObject proj = Instantiate(CurrentWeapon.projectilePrefab, pos, Quaternion.LookRotation(forward));
 
         if (proj.TryGetComponent(out WeaponProjectile projectileScript))
@@ -252,14 +288,12 @@ public class PlayerShooter : NetworkBehaviour
 
     private void ShootMelee(Vector3 pos, Vector3 forward)
     {
+        if (CurrentWeapon == null) return;
         if (Physics.SphereCast(pos, CurrentWeapon.meleeRadius, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
         {
             if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
                 if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
                     health.TakeDamage(CurrentWeapon.damage);
-
-            /*if (hit.collider.TryGetComponent(out PlayerHealth health))
-                health.TakeDamage(CurrentWeapon.damage);*/
         }
     }
 
@@ -268,7 +302,7 @@ public class PlayerShooter : NetworkBehaviour
         Vector2 delta = lookAction.action.ReadValue<Vector2>();
 
         Quaternion targetRot = _initialRot * Quaternion.Euler(
-            Mathf.Clamp(delta.y * swayAmount, swayMinMax.x, swayMinMax.y), 
+            Mathf.Clamp(delta.y * swayAmount, swayMinMax.x, swayMinMax.y),
             Mathf.Clamp(-delta.x * swayAmount, swayMinMax.x, swayMinMax.y), 0);
 
         viewModelParent.localRotation = Quaternion.Slerp(viewModelParent.localRotation, targetRot, Time.deltaTime * swaySmooth);
@@ -277,8 +311,9 @@ public class PlayerShooter : NetworkBehaviour
     [ServerRpc]
     private void ShootServerRPC(Vector3 pos, Vector3 forward)
     {
-        //if (_isReloading || Time.time < _nextFireTime) return;
-        if(CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee) 
+        if (CurrentWeapon == null) return;
+
+        if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee)
             CurrentMag--;
 
         PlayShootSoundObserverRPC();
@@ -297,22 +332,10 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
-    /*[ServerRpc]
-    private void ReloadServerRPC()
-    {
-        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
-
-        int needed = CurrentWeapon.magazineSize - CurrentMag;
-        int transfer = Mathf.Min(needed, CurrentReserve);
-
-        CurrentMag += transfer;
-        CurrentReserve -= transfer;
-    }*/
-
     [ServerRpc]
     private void StartReloadServerRPC()
     {
-        if (_isReloading || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
+        if (_isReloading || CurrentWeapon == null || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
 
         _isReloading = true;
         _reloadEndTime = Time.time + CurrentWeapon.reloadTime;
@@ -327,7 +350,7 @@ public class PlayerShooter : NetworkBehaviour
     [ObserversRpc]
     private void PlayShootSoundObserverRPC()
     {
-        if (CurrentWeapon.shootSound != null)
+        if (CurrentWeapon != null && CurrentWeapon.shootSound != null)
         {
             if (TryGetComponent(out AudioSource playerAudio))
             {

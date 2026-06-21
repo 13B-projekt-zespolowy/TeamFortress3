@@ -11,19 +11,20 @@ public class PlayerHealth : NetworkBehaviour
         if (!isServer) return;
         maxHealth = maxHP;
         currentHealth.value = maxHealth;
-
-        PlayerInfoUI.Instance.healthBar.maxValue = maxHealth;
-        PlayerInfoUI.Instance.UpdateHealthBar(maxHealth);
     }
 
     private void OnEnable()
     {
         if (isOwner)
         {
-            PlayerInfoUI.Instance.SetActive(true);
+            if (PlayerInfoUI.Instance != null)
+                PlayerInfoUI.Instance.SetActive(true);
 
-            GameObject sceneCamera = GameManager.Instance.GetSceneCamera();
-            if (sceneCamera) sceneCamera.SetActive(false);
+            if (GameManager.Instance != null)
+            {
+                GameObject sceneCamera = GameManager.Instance.GetSceneCamera();
+                if (sceneCamera) sceneCamera.SetActive(false);
+            }
         }
     }
 
@@ -31,10 +32,14 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (isOwner)
         {
-            PlayerInfoUI.Instance.SetActive(false);
+            if (PlayerInfoUI.Instance != null)
+                PlayerInfoUI.Instance.SetActive(false);
 
-            GameObject sceneCamera = GameManager.Instance.GetSceneCamera();
-            if(sceneCamera) sceneCamera.SetActive(true);
+            if (GameManager.Instance != null)
+            {
+                GameObject sceneCamera = GameManager.Instance.GetSceneCamera();
+                if (sceneCamera) sceneCamera.SetActive(true);
+            }
         }
     }
 
@@ -42,15 +47,27 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (isOwner)
         {
-            currentHealth.onChanged += PlayerInfoUI.Instance.UpdateHealthBar;
+            currentHealth.onChanged += OnHealthChanged;
             OnEnable();
+            OnHealthChanged(currentHealth.value);
         }
     }
 
     protected override void OnDespawned()
     {
         if (isOwner)
-            currentHealth.onChanged -= PlayerInfoUI.Instance.UpdateHealthBar;
+            currentHealth.onChanged -= OnHealthChanged;
+    }
+
+    private void OnHealthChanged(int newHealth)
+    {
+        if (PlayerInfoUI.Instance != null)
+        {
+            if (PlayerInfoUI.Instance.healthBar != null && maxHealth > 0)
+                PlayerInfoUI.Instance.healthBar.maxValue = maxHealth;
+
+            PlayerInfoUI.Instance.UpdateHealthBar(newHealth);
+        }
     }
 
     public void TakeDamage(int amount)
