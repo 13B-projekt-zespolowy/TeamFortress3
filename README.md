@@ -33,14 +33,14 @@ If you want to host a game:
 If you are looking to join an existing game, you have two options from the Main Menu:
 
 * **Option 1: Server Browser**
-  1. Select the **Browse** option.
-  2. A list of all currently active and public lobbies will appear.
-  3. Scroll through the list, find a lobby with open slots that you wish to join, and click on it.
+  - Select the **Browse** option.
+  - A list of all currently active and public lobbies will appear.
+  - Scroll through the list, find a lobby with open slots that you wish to join, and click on it.
 
 * **Option 2: Direct Lobby Code**
-  1. Select the **Join** option.
-  2. A prompt will appear asking for a code. Type in the specific Lobby Code provided to you by the creator of the lobby.
-  3. Confirm your entry to instantly connect to their specific session.
+  - Select the **Join** option.
+  - A prompt will appear asking for a code. Type in the specific Lobby Code provided to you by the creator of the lobby.
+  - Confirm your entry to instantly connect to their specific session.
 
 ### Starting the Match
 Once you are inside a lobby alongside the other players, the game does not start automatically:
