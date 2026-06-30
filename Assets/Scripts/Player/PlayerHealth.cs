@@ -1,11 +1,23 @@
 using PurrNet;
 using UnityEngine;
 
+/// <summary>
+/// Manages player health, damage, death, and UI updates.
+/// Handles health synchronization across the network and respawn functionality.
+/// </summary>
 public class PlayerHealth : NetworkBehaviour
 {
+    /// <summary>
+    /// The current health value synchronized across the network.
+    /// </summary>
     public SyncVar<int> currentHealth = new();
     private int maxHealth;
 
+    /// <summary>
+    /// Initializes the player's health to the maximum value.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="maxHP">The maximum health value.</param>
     public void Initialize(int maxHP)
     {
         if (!isServer) return;
@@ -59,6 +71,10 @@ public class PlayerHealth : NetworkBehaviour
             currentHealth.onChanged -= OnHealthChanged;
     }
 
+    /// <summary>
+    /// Updates the health UI when the health value changes.
+    /// </summary>
+    /// <param name="newHealth">The new health value.</param>
     private void OnHealthChanged(int newHealth)
     {
         if (PlayerInfoUI.Instance != null)
@@ -70,6 +86,11 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies damage to the player. Triggers death if health reaches zero.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="amount">The amount of damage to apply.</param>
     public void TakeDamage(int amount)
     {
         if (!isServer || currentHealth.value <= 0) return;
@@ -79,18 +100,29 @@ public class PlayerHealth : NetworkBehaviour
             Die();
     }
 
+    /// <summary>
+    /// Restores the player's health to maximum.
+    /// Server-only operation.
+    /// </summary>
     public void RefillHealth()
     {
         if (!isServer) return;
         currentHealth.value = maxHealth;
     }
 
+    /// <summary>
+    /// Handles the player's death by starting the respawn countdown and deactivating the player object.
+    /// </summary>
     private void Die()
     {
         GameManager.Instance.StartRespawnCountdown((PlayerID)owner);
         SetActiveRpc(false);
     }
 
+    /// <summary>
+    /// RPC to set the player object's active state for all clients.
+    /// </summary>
+    /// <param name="active">Whether the object should be active.</param>
     [ObserversRpc]
     private void SetActiveRpc(bool active)
     {

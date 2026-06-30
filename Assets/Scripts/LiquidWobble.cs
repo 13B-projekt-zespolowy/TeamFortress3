@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Simulates liquid wobble and sloshing effects for a container based on movement and rotation.
+/// Uses shader properties to animate the liquid surface.
+/// </summary>
 public class LiquidWobble : MonoBehaviour
 {
     [Header("Wobble Settings")]
@@ -80,6 +84,11 @@ public class LiquidWobble : MonoBehaviour
         lastRot = transform.rotation;
     }
 
+    /// <summary>
+    /// Calculates the angular velocity of the object based on rotation changes.
+    /// </summary>
+    /// <param name="deltaTime">The time step for velocity calculation.</param>
+    /// <returns>The angular velocity as a Vector3.</returns>
     Vector3 GetAngularVelocity(float deltaTime)
     {
         Quaternion deltaRot = transform.rotation * Quaternion.Inverse(lastRot);

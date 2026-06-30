@@ -3,6 +3,10 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the in-game chat system including message input, display, and UI visibility.
+/// Handles input switching between gameplay and UI modes when typing.
+/// </summary>
 public class ChatManager : MonoBehaviour
 {
     public static ChatManager Instance;
@@ -56,6 +60,9 @@ public class ChatManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Opens the chat input field and switches to UI input mode.
+    /// </summary>
     public void OpenChat()
     {
         InputManager.Instance.SwitchInputMode(InputMode.Ui);
@@ -66,6 +73,9 @@ public class ChatManager : MonoBehaviour
         chatInput.ActivateInputField();
     }
 
+    /// <summary>
+    /// Sends the current chat message, adds it to the message area, and switches back to gameplay mode.
+    /// </summary>
     public void SendMessageToChat()
     {
         InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
@@ -84,6 +94,9 @@ public class ChatManager : MonoBehaviour
         CloseChatUI();
     }
 
+    /// <summary>
+    /// Cancels the current chat input and switches back to gameplay mode.
+    /// </summary>
     private void CancelChat()
     {
         InputManager.Instance.SwitchInputMode(InputMode.Gameplay);
@@ -92,6 +105,9 @@ public class ChatManager : MonoBehaviour
         CloseChatUI();
     }
 
+    /// <summary>
+    /// Closes the chat input field and resets the typing state.
+    /// </summary>
     private void CloseChatUI()
     {
         IsTyping = false;
@@ -99,6 +115,9 @@ public class ChatManager : MonoBehaviour
         chatInput.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the chat panel temporarily and resets the hide timer.
+    /// </summary>
     public void ShowChatTemporarily()
     {
         chatPanel.SetActive(true);

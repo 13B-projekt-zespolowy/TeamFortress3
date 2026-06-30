@@ -1,6 +1,10 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Displays the game timer in a formatted MM:SS format.
+/// Changes text color to red when less than 10 seconds remain.
+/// </summary>
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class TimerText : MonoBehaviour
 {

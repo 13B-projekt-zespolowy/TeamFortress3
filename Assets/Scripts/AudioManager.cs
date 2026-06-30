@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages audio playback for background music and sound effects in the game.
+/// Implements singleton pattern for global access.
+/// Automatically plays random BGM tracks and provides SFX playback functionality.
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
@@ -37,6 +42,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Plays a random background music track from the playlist.
+    /// </summary>
     public void PlayRandomBGM()
     {
         if (bgmPlaylist.Length == 0) return;
@@ -48,6 +56,10 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
     }
 
+    /// <summary>
+    /// Plays a sound effect clip through the SFX audio source.
+    /// </summary>
+    /// <param name="clip">The audio clip to play.</param>
     public void PlaySFX(AudioClip clip)
     {
         if (clip != null)

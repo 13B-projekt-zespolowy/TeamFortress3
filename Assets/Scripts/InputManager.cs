@@ -2,6 +2,11 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Manages input modes and action maps for the game.
+/// Supports switching between gameplay and UI input modes with cursor state management.
+/// Singleton pattern ensures global access to input controls.
+/// </summary>
 public class InputManager : MonoBehaviour
 {
     [SerializeField] private InputActionAsset inputActions;
@@ -31,6 +36,10 @@ public class InputManager : MonoBehaviour
         SwitchInputMode(initialInputMode);
     }
 
+    /// <summary>
+    /// Switches the active input mode and updates cursor visibility/lock state accordingly.
+    /// </summary>
+    /// <param name="mode">The input mode to switch to (Gameplay or UI).</param>
     public void SwitchInputMode(InputMode mode)
     {
         InputMode = mode;
@@ -57,8 +66,13 @@ public class InputManager : MonoBehaviour
     }
 }
 
+/// <summary>
+/// Defines the available input modes for the game.
+/// </summary>
 public enum InputMode
 {
+    /// <summary>Gameplay mode with cursor locked and hidden.</summary>
     Gameplay,
+    /// <summary>UI mode with cursor visible and unlocked.</summary>
     Ui,
 }

@@ -2,6 +2,10 @@ using PurrNet;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Displays the respawn timer UI for the local player.
+/// Shows remaining time until respawn and automatically hides when not needed.
+/// </summary>
 public class RespawnTimerUI : MonoBehaviour
 {
     public GameObject container;

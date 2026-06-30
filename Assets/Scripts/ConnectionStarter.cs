@@ -7,6 +7,12 @@ using PurrNet.Utils;
 using Steamworks;
 using UnityEngine;
 
+/// <summary>
+/// Manages network connection initialization for the game.
+/// Supports both Steam-based and UDP-based connections.
+/// Automatically determines connection type based on presence of LobbyDataHolder.
+/// Handles server/client role assignment based on build flags and lobby ownership.
+/// </summary>
 [RequireComponent(typeof(NetworkManager), typeof(UDPTransport), typeof(SteamTransport))]
 public class ConnectionStarter : MonoBehaviour
 {
@@ -95,6 +101,11 @@ public class ConnectionStarter : MonoBehaviour
             StartCoroutine(StartClient());
     }
 
+    /// <summary>
+    /// Starts the client connection after a brief delay.
+    /// This ensures the server is fully listening before the client attempts to connect.
+    /// </summary>
+    /// <returns>Coroutine enumerator.</returns>
     private IEnumerator StartClient()
     {
         // Brief delay to ensure server is fully listening before client connects.
@@ -102,6 +113,11 @@ public class ConnectionStarter : MonoBehaviour
         networkManager.StartClient();
     }
 
+    /// <summary>
+    /// Determines if the current application context matches the specified start flags.
+    /// </summary>
+    /// <param name="flags">The start flags to check against the current context.</param>
+    /// <returns>True if the current context matches any of the flags, false otherwise.</returns>
     private static bool ShouldStart(StartFlags flags)
     {
         return (flags.HasFlag(StartFlags.Editor) && ApplicationContext.isMainEditor) ||

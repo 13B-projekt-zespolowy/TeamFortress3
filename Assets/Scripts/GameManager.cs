@@ -2,6 +2,10 @@ using PurrNet;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages the core game logic including player spawning, respawning, team balancing, and session management.
+/// Handles network synchronization for player-related operations.
+/// </summary>
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] private GameObject sceneCamera;
@@ -21,6 +25,12 @@ public class GameManager : NetworkBehaviour
             Instance = this;
     }
 
+    /// <summary>
+    /// Spawns a new player for the specified player connection.
+    /// Assigns a balanced team and initializes player components.
+    /// </summary>
+    /// <param name="player">The PlayerID of the player to spawn.</param>
+    /// <param name="conn">The PlayerConnection instance.</param>
     public void SpawnPlayer(PlayerID player, PlayerConnection conn)
     {
         if (!sessions.TryGetValue(player, out PlayerSession session))
@@ -64,6 +74,11 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Starts the respawn countdown for a player.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="player">The PlayerID of the player to respawn.</param>
     public void StartRespawnCountdown(PlayerID player)
     {
         if (!isServer) return;
@@ -72,6 +87,11 @@ public class GameManager : NetworkBehaviour
             session.connection.respawnTimer.StartTimer(respawnTime);
     }
 
+    /// <summary>
+    /// Respawns a player at an appropriate spawn point based on their team.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="player">The PlayerID of the player to respawn.</param>
     public void RespawnPlayer(PlayerID player)
     {
         if (!isServer) return;
@@ -92,6 +112,10 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes a player from the game session and despawns their object.
+    /// </summary>
+    /// <param name="player">The PlayerID of the player to remove.</param>
     public void RemovePlayer(PlayerID player)
     {
         if (sessions.TryGetValue(player, out PlayerSession session))
@@ -103,8 +127,19 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the scene camera GameObject.
+    /// </summary>
+    /// <returns>The scene camera GameObject.</returns>
     public GameObject GetSceneCamera() => sceneCamera;
 
+    /// <summary>
+    /// RPC that respawns a player at the specified position and rotation.
+    /// Restores health, ammo, and reactivates the player object.
+    /// </summary>
+    /// <param name="playerObject">The NetworkIdentity of the player object.</param>
+    /// <param name="position">The spawn position.</param>
+    /// <param name="rotation">The spawn rotation.</param>
     [ObserversRpc]
     private void RespawnPlayerRpc(NetworkIdentity playerObject, Vector3 position, Quaternion rotation)
     {
@@ -121,6 +156,10 @@ public class GameManager : NetworkBehaviour
         if (playerObject.TryGetComponent(out PlayerVisuals visuals)) visuals.SwitchWeapon(0);
     }
 
+    /// <summary>
+    /// Determines the team with fewer players and assigns the new player to that team for balance.
+    /// </summary>
+    /// <returns>The team with fewer active players.</returns>
     private Team GetBalancedTeam()
     {
         int red = 0, blue = 0;
@@ -137,6 +176,11 @@ public class GameManager : NetworkBehaviour
         return red <= blue ? Team.Red : Team.Blue;
     }
 
+    /// <summary>
+    /// Gets a random spawn point for the specified team.
+    /// </summary>
+    /// <param name="team">The team to get a spawn point for.</param>
+    /// <returns>A Transform of the spawn point, or null if none exist.</returns>
     private Transform GetSpawnPoint(Team team)
     {
         Transform root = team == Team.Red ? redSpawnPointsRoot : blueSpawnPointsRoot;
@@ -149,6 +193,9 @@ public class GameManager : NetworkBehaviour
     }*/
 }
 
+/// <summary>
+/// Represents a player session containing their connection and player object.
+/// </summary>
 class PlayerSession
 {
     public PlayerConnection connection;

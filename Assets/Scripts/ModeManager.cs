@@ -2,6 +2,10 @@ using PurrNet;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Manages the game mode logic including scoring, win conditions, and match results.
+/// Handles network synchronization of scores and UI updates.
+/// </summary>
 public class ModeManager : NetworkBehaviour
 {
     public static ModeManager Instance { get; private set; }
@@ -33,6 +37,11 @@ public class ModeManager : NetworkBehaviour
         timer = FindAnyObjectByType<GameTimer>();
     }
 
+    /// <summary>
+    /// Increases the score for the specified team and checks for win conditions.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="team">The team that scored.</param>
     public void IncreaseScore(Team team)
     {
         if (!isServer)
@@ -54,18 +63,29 @@ public class ModeManager : NetworkBehaviour
             EndWin(Team.Blue);
     }
 
+    /// <summary>
+    /// Ends the match with a win for the specified team.
+    /// </summary>
+    /// <param name="winner">The winning team.</param>
     public void EndWin(Team winner)
     {
         timer.StopTimer();
         ShowResultText($"Winner: {winner}");
     }
 
+    /// <summary>
+    /// Ends the match in a draw.
+    /// </summary>
     public void EndDraw()
     {
         timer.StopTimer();
         ShowResultText("Draw");
     }
 
+    /// <summary>
+    /// RPC that displays the result text to all clients.
+    /// </summary>
+    /// <param name="text">The text to display.</param>
     [ObserversRpc]
     private void ShowResultText(string text)
     {
@@ -74,6 +94,9 @@ public class ModeManager : NetworkBehaviour
     }
 }
 
+/// <summary>
+/// Defines the available teams in the game.
+/// </summary>
 public enum Team
 {
     Red,

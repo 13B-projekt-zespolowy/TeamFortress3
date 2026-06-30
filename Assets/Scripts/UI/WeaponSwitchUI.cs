@@ -4,6 +4,10 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Manages the weapon switch UI including ammo display, weapon cards, and HUD elements.
+/// Handles fade animations for weapon selection cards and updates ammo/crosshair state.
+/// </summary>
 public class WeaponSwitchUI : MonoBehaviour
 {
     public static WeaponSwitchUI Instance;
@@ -41,12 +45,19 @@ public class WeaponSwitchUI : MonoBehaviour
             Instance = this;
     }
 
+    /// <summary>
+    /// Enables the gameplay HUD panels (stats and ammo).
+    /// </summary>
     public void EnableGameplayHUD()
     {
         if (statsPanel) statsPanel.SetActive(true);
         if (ammoPanel) ammoPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Initializes weapon cards from the weapon loadout.
+    /// </summary>
+    /// <param name="loadout">Array of WeaponInfo for available weapons.</param>
     public void Initialize(WeaponInfo[] loadout)
     {
         if (cardPrefab != null)
@@ -69,6 +80,10 @@ public class WeaponSwitchUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows the weapon switch UI and updates HUD for the active weapon.
+    /// </summary>
+    /// <param name="activeWeaponIndex">The index of the currently active weapon.</param>
     public void ShowUI(int activeWeaponIndex)
     {
         UpdateHUD(activeWeaponIndex);
@@ -82,6 +97,10 @@ public class WeaponSwitchUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the active weapon card by expanding its width.
+    /// </summary>
+    /// <param name="index">The index of the active weapon.</param>
     private void SetActiveSlot(int index)
     {
         for (int i = 0; i < _cards.Count; i++)
@@ -91,6 +110,10 @@ public class WeaponSwitchUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates HUD elements based on the active weapon type.
+    /// </summary>
+    /// <param name="index">The active weapon index.</param>
     private void UpdateHUD(int index)
     {
         if (index == 0) 
@@ -105,6 +128,12 @@ public class WeaponSwitchUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the ammo display text.
+    /// </summary>
+    /// <param name="currentMag">Current magazine ammo count.</param>
+    /// <param name="currentReserve">Current reserve ammo count.</param>
+    /// <param name="isMelee">Whether the active weapon is melee (hides ammo text).</param>
     public void UpdateAmmo(int currentMag, int currentReserve, bool isMelee)
     {
         if (ammoText == null) return;
@@ -120,6 +149,9 @@ public class WeaponSwitchUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine that handles the fade-in, display, and fade-out sequence for weapon cards.
+    /// </summary>
     private IEnumerator FadeSequence()
     {
         if (canvasGroup == null) yield break;

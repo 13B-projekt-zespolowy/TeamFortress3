@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
+/// <summary>
+/// Manages the scoreboard UI, displaying player statistics when the scoreboard key is held.
+/// Currently uses mock data for demonstration purposes.
+/// </summary>
 public class ScoreboardController : MonoBehaviour
 {
     [Header("Input Settings")]
@@ -35,6 +39,10 @@ public class ScoreboardController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the scoreboard with player data by creating or refreshing rows.
+    /// </summary>
+    /// <param name="players">The list of player data to display.</param>
     private void UpdateScoreboard(List<PlayerData> players)
     {
         foreach (var row in rows)
@@ -58,6 +66,11 @@ public class ScoreboardController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Retrieves player data for the scoreboard.
+    /// Currently returns mock data - replace with actual networked player data.
+    /// </summary>
+    /// <returns>A list of PlayerData objects.</returns>
     private static List<PlayerData> GetPlayers()
     {
         return new List<PlayerData>()
@@ -69,6 +82,9 @@ public class ScoreboardController : MonoBehaviour
     }
 }
 
+/// <summary>
+/// Represents a player's statistics for the scoreboard.
+/// </summary>
 [System.Serializable]
 public class PlayerData
 {

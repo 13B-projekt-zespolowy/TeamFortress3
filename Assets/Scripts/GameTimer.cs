@@ -2,6 +2,11 @@ using PurrNet;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Manages the game timer, counting down from a specified duration.
+/// Triggers events when the timer ends and supports adding time dynamically.
+/// Server-authoritative with network synchronization.
+/// </summary>
 public class GameTimer : NetworkBehaviour
 {
     [Header("Timer settings")]
@@ -9,8 +14,14 @@ public class GameTimer : NetworkBehaviour
 
     [SerializeField] private bool timerIsRunning = true;
 
+    /// <summary>
+    /// Gets the current remaining time on the timer.
+    /// </summary>
     public float TimeRemaining => timeRemaining;
 
+    /// <summary>
+    /// Event invoked when the timer reaches zero.
+    /// </summary>
     public UnityEvent OnTimerEnd;
 
     private ModeManager modeManager;
@@ -45,6 +56,11 @@ public class GameTimer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Adds additional time to the timer.
+    /// Server-only operation.
+    /// </summary>
+    /// <param name="time">The amount of time to add in seconds.</param>
     [ServerRpc]
     public void AddTime(float time)
     {
@@ -54,6 +70,10 @@ public class GameTimer : NetworkBehaviour
         timeRemaining.value += time;
     }
 
+    /// <summary>
+    /// Stops the timer from counting down.
+    /// Server-only operation.
+    /// </summary>
     [ServerRpc]
     public void StopTimer()
     {

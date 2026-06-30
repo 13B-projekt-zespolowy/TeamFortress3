@@ -2,12 +2,20 @@ using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Defines the movement states for the player.
+/// </summary>
 public enum MovementType
 {
     Walking,
     Crouching
 }
 
+/// <summary>
+/// Controls player movement, camera look, and input handling for a networked first-person character.
+/// Supports walking, crouching, jumping with coyote time and jump buffering.
+/// Only the owning client processes inputs and updates the local player.
+/// </summary>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour
 {
@@ -57,6 +65,10 @@ public class PlayerController : NetworkBehaviour
 
     private bool wantsUncrouch = false;
 
+    /// <summary>
+    /// Checks if there is enough vertical space to uncrouch without colliding with obstacles.
+    /// </summary>
+    /// <returns>True if the player can stand up, false otherwise.</returns>
     private bool CanUncrouch()
     {
         float fullHeight = 2f;
@@ -85,6 +97,9 @@ public class PlayerController : NetworkBehaviour
         cameraHeight = baseCameraHeight;
     }
 
+    /// <summary>
+    /// Initiates crouching by reducing the character controller height.
+    /// </summary>
     private void StartCrouching()
     {
         wantsUncrouch = false;
@@ -95,11 +110,17 @@ public class PlayerController : NetworkBehaviour
         _playerVisuals.SetCrouch(true);
     }
 
+    /// <summary>
+    /// Signals the intention to uncrouch; actual uncrouching happens in HandleUncrouching.
+    /// </summary>
     private void StopCrouching()
     {
         wantsUncrouch = true;
     }
 
+    /// <summary>
+    /// Attempts to uncrouch if there is space available.
+    /// </summary>
     private void HandleUncrouching()
     {
         if (!wantsUncrouch || !CanUncrouch()) return;
@@ -120,12 +141,19 @@ public class PlayerController : NetworkBehaviour
         enabled = isOwner;
     }
 
+    /// <summary>
+    /// Called when the jump input action is performed. Buffers the jump input.
+    /// </summary>
+    /// <param name="context">The input action context.</param>
     private void OnJumpActionPerformed(InputAction.CallbackContext context)
     {
         pendingJump = true;
         jumpBufferTimer = jumpBufferTime;
     }
 
+    /// <summary>
+    /// Handles mouse look rotation for both the player and camera.
+    /// </summary>
     void MouseLook()
     {
         Vector2 lookDelta = lookAction.action.ReadValue<Vector2>() * cameraSensitivity * Time.deltaTime;
@@ -138,6 +166,9 @@ public class PlayerController : NetworkBehaviour
         if(cameraMimic) cameraMimic.rotation = playerCamera.transform.rotation;
     }
 
+    /// <summary>
+    /// Handles player movement, including grounded movement, aerial movement, jumping, and gravity.
+    /// </summary>
     void Motion()
     {
         bool isGrounded = IsGrounded();
@@ -224,6 +255,10 @@ public class PlayerController : NetworkBehaviour
         Motion();
     }
 
+    /// <summary>
+    /// Determines if the player is grounded using sphere casting for more reliable detection.
+    /// </summary>
+    /// <returns>True if grounded, false otherwise.</returns>
     private bool IsGrounded()
     {
         if (controller.isGrounded) return true;
@@ -234,6 +269,9 @@ public class PlayerController : NetworkBehaviour
         return Physics.SphereCast(controller.bounds.center, sphereRadius, Vector3.down, out _, castDistance);
     }
 
+    /// <summary>
+    /// Smoothly transitions the camera height between walking and crouching states.
+    /// </summary>
     private void UpdateCameraHeight()
     {
         float targetCameraHeight = movementType == MovementType.Crouching ? crouchCameraHeight : baseCameraHeight;

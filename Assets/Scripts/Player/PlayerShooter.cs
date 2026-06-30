@@ -2,6 +2,10 @@ using PurrNet;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Manages player shooting mechanics including weapon switching, reloading, ammo management,
+/// and different weapon types (hitscan, projectile, melee). Handles both server and client-side logic.
+/// </summary>
 public class PlayerShooter : NetworkBehaviour
 {
     public Transform playerCamera;
@@ -42,14 +46,23 @@ public class PlayerShooter : NetworkBehaviour
     private int _lastMag = -1;
     private int _lastReserve = -1;
 
+    /// <summary>
+    /// Gets the currently equipped weapon information.
+    /// </summary>
     public WeaponInfo CurrentWeapon => weaponLoadout.Length > _activeWeaponIndex.value ? weaponLoadout[_activeWeaponIndex.value] : null;
 
+    /// <summary>
+    /// Gets or sets the current magazine ammo count for the active weapon.
+    /// </summary>
     public int CurrentMag
     {
         get => _mags.Count > _activeWeaponIndex.value ? _mags[_activeWeaponIndex.value] : 0;
         set { if (_mags.Count > _activeWeaponIndex.value) _mags[_activeWeaponIndex.value] = value; }
     }
 
+    /// <summary>
+    /// Gets or sets the current reserve ammo count for the active weapon.
+    /// </summary>
     public int CurrentReserve
     {
         get => _reserves.Count > _activeWeaponIndex.value ? _reserves[_activeWeaponIndex.value] : 0;
@@ -155,6 +168,10 @@ public class PlayerShooter : NetworkBehaviour
             TryReload();
     }
 
+    /// <summary>
+    /// Handles weapon switching input and initiates the switch.
+    /// </summary>
+    /// <param name="context">The input action context.</param>
     public void HandleWeaponSwitch(InputAction.CallbackContext context)
     {
         float switchInput = context.ReadValue<float>();
@@ -172,6 +189,10 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates weapon visuals locally when the weapon index changes.
+    /// </summary>
+    /// <param name="newIndex">The new weapon index.</param>
     private void SwitchWeaponLocal(int newIndex)
     {
         UpdateWeaponVisual(newIndex);
@@ -182,6 +203,10 @@ public class PlayerShooter : NetworkBehaviour
         _lastMag = -1;
     }
 
+    /// <summary>
+    /// Updates the visibility of weapon viewmodels.
+    /// </summary>
+    /// <param name="newIndex">The active weapon index.</param>
     private void UpdateWeaponVisual(int newIndex)
     {
         for (int i = 0; i < _weaponViewmodels.Length; i++)
@@ -191,6 +216,9 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the ammo UI display.
+    /// </summary>
     private void RefreshAmmoUI()
     {
         if (WeaponSwitchUI.Instance)
@@ -200,6 +228,9 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Attempts to shoot the current weapon.
+    /// </summary>
     public void TryShoot()
     {
         if (!isOwner || _isReloading || Time.time < _nextFireTime || CurrentWeapon == null) return;
@@ -217,11 +248,18 @@ public class PlayerShooter : NetworkBehaviour
         ShootServerRPC((CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile) ? firePoint.position : playerCamera.position, playerCamera.forward);
     }
 
+    /// <summary>
+    /// Adds ammo to the current reserve.
+    /// </summary>
+    /// <param name="amount">The amount of ammo to add.</param>
     public void AddAmmo(int amount)
     {
         AddAmmoServerRPC(amount);
     }
 
+    /// <summary>
+    /// Refills all ammo and resets to the first weapon. Server-only operation.
+    /// </summary>
     public void RefillAmmo()
     {
         if (!isServer) return;
@@ -249,6 +287,9 @@ public class PlayerShooter : NetworkBehaviour
         _activeWeaponIndex.value = newIndex;
     }
 
+    /// <summary>
+    /// Attempts to reload the current weapon.
+    /// </summary>
     private void TryReload()
     {
         if (_isReloading || CurrentWeapon == null || CurrentMag >= CurrentWeapon.magazineSize || CurrentReserve <= 0) return;
@@ -261,6 +302,11 @@ public class PlayerShooter : NetworkBehaviour
         StartReloadServerRPC();
     }
 
+    /// <summary>
+    /// Performs hitscan shooting logic.
+    /// </summary>
+    /// <param name="pos">The origin position of the shot.</param>
+    /// <param name="forward">The direction of the shot.</param>
     private void ShootHitscan(Vector3 pos, Vector3 forward)
     {
         if (CurrentWeapon == null) return;
@@ -277,6 +323,11 @@ public class PlayerShooter : NetworkBehaviour
         HitscanDebugObserverRPC(pos, endPoint);
     }
 
+    /// <summary>
+    /// Performs projectile shooting logic.
+    /// </summary>
+    /// <param name="pos">The spawn position of the projectile.</param>
+    /// <param name="forward">The direction of the projectile.</param>
     private void ShootProjectile(Vector3 pos, Vector3 forward)
     {
         if (CurrentWeapon == null) return;
@@ -286,6 +337,11 @@ public class PlayerShooter : NetworkBehaviour
             projectileScript.Initialize(CurrentWeapon.damage, GetComponent<Collider>(), _playerTeam.Team);
     }
 
+    /// <summary>
+    /// Performs melee attack logic using a sphere cast.
+    /// </summary>
+    /// <param name="pos">The origin position of the attack.</param>
+    /// <param name="forward">The direction of the attack.</param>
     private void ShootMelee(Vector3 pos, Vector3 forward)
     {
         if (CurrentWeapon == null) return;
@@ -297,6 +353,9 @@ public class PlayerShooter : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles weapon sway based on mouse input.
+    /// </summary>
     private void HandleSway()
     {
         Vector2 delta = lookAction.action.ReadValue<Vector2>();
