@@ -11,10 +11,13 @@ public class InputManager : MonoBehaviour
 {
     [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private InputMode initialInputMode = InputMode.Gameplay;
+
     public InputMode InputMode { get; private set; }
 
     public static InputManager Instance { get; private set; }
 
+    public bool UiModeLock {get;set;} = true;
+ 
     private InputActionMap gameplayActions;
     private InputActionMap uiActions;
     private InputActionMap alwaysActions;
@@ -42,8 +45,13 @@ public class InputManager : MonoBehaviour
     /// <param name="mode">The input mode to switch to (Gameplay or UI).</param>
     public void SwitchInputMode(InputMode mode)
     {
-        InputMode = mode;
-
+        if (UiModeLock)
+        {
+            InputMode = InputMode.Ui;
+        } else
+        {
+            InputMode = mode;    
+        }        
         switch (InputMode)
         {
             case InputMode.Gameplay:
