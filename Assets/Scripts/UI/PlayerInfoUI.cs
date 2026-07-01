@@ -37,10 +37,11 @@ public class PlayerInfoUI : MonoBehaviour
     /// <summary>
     /// Updates the health bar slider and text with the current health value.
     /// </summary>
-    /// <param name="value">The current health value.</param>
-    public void UpdateHealthBar(int value)
+    /// <param name="health">The current health value.</param>
+    /// <param name="maxHealth">The max health value.</param>
+    public void UpdateHealthBar(int health, int maxHealth)
     {
-        healthBar.value = value;
-        healthBarText.text = value.ToString();
+        healthBar.value = health / (float)maxHealth;
+        healthBarText.text = health.ToString();
     }
 }

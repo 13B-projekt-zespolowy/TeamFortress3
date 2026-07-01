@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Manages the weapon switch UI including ammo display, weapon cards, and HUD elements.
@@ -116,16 +117,10 @@ public class WeaponSwitchUI : MonoBehaviour
     /// <param name="index">The active weapon index.</param>
     private void UpdateHUD(int index)
     {
-        if (index == 0) 
-        {
-            if (crosshairObject) crosshairObject.SetActive(true);
-            if (ammoIconImage && rangedSprite) ammoIconImage.sprite = rangedSprite;
-        }
-        else if (index == 1) 
-        {
-            if (crosshairObject) crosshairObject.SetActive(false);
-            if (ammoIconImage && meleeSprite) ammoIconImage.sprite = meleeSprite;
-        }
+        if (crosshairObject) crosshairObject.SetActive(index == 0);
+
+        WeaponSwitchCardUI card = _cards.ElementAtOrDefault(index);
+        if (ammoIconImage && card) ammoIconImage.sprite = card.weaponImage.sprite;
     }
 
     /// <summary>
