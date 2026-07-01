@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35135fe2cf8ee0d488d1c6397ecab1b9, type: 3}
   m_Name: Class1
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
-  className: "Cz\u0142owiek"
+  className: Human
   playerPrefab: {fileID: 4637806617637856420, guid: 1ba23f7d7312f76469101540f5c04186, type: 3}
   maxHealth: 100
