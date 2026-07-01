@@ -19,17 +19,19 @@ public class AmmoBoxInteractable : ContactInteractable
         if (!sender.TryGetComponent(out PlayerShooter shooter)) return InteractionResultAction.None;
 
         shooter.AddAmmo(ammoBonus);
-
+        /*
         if (TryGetComponent(out DissolveController dissolveController))
         {
             dissolveController.StartDissolve();
         }
-
+        */
+        /*
         if (TryGetComponent(out Collider col))
         {
             col.enabled = false;
         }
+        */
 
-        return InteractionResultAction.None;
+        return InteractionResultAction.Destroy;
     }
 }

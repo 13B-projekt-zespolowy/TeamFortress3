@@ -12,6 +12,13 @@ public class ItemSpawner : NetworkBehaviour
     /// </summary>
     [SerializeField] private NetworkIdentity spawnObject;
 
+
+
+    /// <summary>
+    /// Object to show when there is no current item
+    /// </summary>
+    [SerializeField] private GameObject placeholderObject;
+
     /// <summary>
     /// Time after which the object respawns after being destroyed.
     /// </summary>
@@ -32,6 +39,7 @@ public class ItemSpawner : NetworkBehaviour
     /// <param name="object">The destroyed GameObject.</param>
     private void OnInstanceDestroyed(GameObject @object)
     {
+        placeholderObject.SetActive(true);
         Invoke(nameof(Spawn), respawnTime);
     }
 
@@ -42,6 +50,7 @@ public class ItemSpawner : NetworkBehaviour
     [ServerRpc]
     private void Spawn()
     {
+        placeholderObject.SetActive(false);
         instance = Instantiate(spawnObject, transform);
         instance.GetComponent<ContactInteractable>().OnDestroyed += OnInstanceDestroyed;
     }
