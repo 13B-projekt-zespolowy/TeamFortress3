@@ -43,6 +43,7 @@ public class ClassSelectUI : MonoBehaviour
     public void SetMenuState(bool state)
     {
         uiPanel.SetActive(state);
+        InputManager.Instance.UiModeLock = state;
         InputManager.Instance.SwitchInputMode(state ? InputMode.Ui : InputMode.Gameplay);
     }
 
