@@ -7102,11 +7102,11 @@ PrefabInstance:
     - target: {fileID: -6902573867230041995, guid: c2f676f2035d84d4f9f3ae1c1dec5c30, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7d2e1d535c968394e8b25d3b07217d9b, type: 2}
+      objectReference: {fileID: 2100000, guid: c58609fd0a285a3a1b2ddbb194e0a1c4, type: 2}
     - target: {fileID: -4718040791104185828, guid: c2f676f2035d84d4f9f3ae1c1dec5c30, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7d2e1d535c968394e8b25d3b07217d9b, type: 2}
+      objectReference: {fileID: 2100000, guid: c58609fd0a285a3a1b2ddbb194e0a1c4, type: 2}
     - target: {fileID: 919132149155446097, guid: c2f676f2035d84d4f9f3ae1c1dec5c30, type: 3}
       propertyPath: m_Name
       value: Mountains
@@ -7114,7 +7114,7 @@ PrefabInstance:
     - target: {fileID: 1746654310787607633, guid: c2f676f2035d84d4f9f3ae1c1dec5c30, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7d2e1d535c968394e8b25d3b07217d9b, type: 2}
+      objectReference: {fileID: 2100000, guid: c58609fd0a285a3a1b2ddbb194e0a1c4, type: 2}
     - target: {fileID: 6426448320267853852, guid: c2f676f2035d84d4f9f3ae1c1dec5c30, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7
