@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35135fe2cf8ee0d488d1c6397ecab1b9, type: 3}
   m_Name: Class4
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
-  className: Klasa 4
-  playerPrefab: {fileID: 914301606270981900, guid: f99be902542f93d4aa22ebbbfe460cf2, type: 3}
+  className: Elf
+  playerPrefab: {fileID: 4637806617637856420, guid: e432b6c76638d514fa039dad9eecc054, type: 3}
   maxHealth: 100

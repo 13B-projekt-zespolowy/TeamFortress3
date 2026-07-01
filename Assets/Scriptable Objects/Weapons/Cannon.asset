@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21954c62248d4a746aa4f1ca8e3cf8f2, type: 3}
+  m_Name: Cannon
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponInfo
+  weaponName: Cannon
+  weaponIcon: {fileID: 21300000, guid: 32e91a989e182e74f8650e2303ea4bbb, type: 3}
+  viewmodel: {fileID: 0}
+  fireType: 0
+  shootMode: 1
+  magazineSize: 3
+  initialReserve: 9
+  reloadTime: 2.8
+  fireRate: 1.5
+  damage: 55
+  range: 100
+  spread: 0
+  shootSound: {fileID: 0}
+  requiresRevving: 0
+  revUpTime: 1.5
+  meleeRadius: 0.5
+  projectilePrefab: {fileID: 5447330612635458532, guid: da684c599a94aae4e915a3b460df2a56, type: 3}

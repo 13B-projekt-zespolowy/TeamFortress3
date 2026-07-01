@@ -8,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public class GameManager : NetworkBehaviour
 {
+    [Header("Game Settings")]
     [SerializeField] private GameObject sceneCamera;
     //[SerializeField] private Transform spawnPointsRoot;
     [SerializeField] private Transform redSpawnPointsRoot;
@@ -120,6 +121,9 @@ public class GameManager : NetworkBehaviour
     {
         if (sessions.TryGetValue(player, out PlayerSession session))
         {
+            if (session.playerObject.TryGetComponent<PlayerFlagCarry>(out PlayerFlagCarry flagCarry)) 
+                if (flagCarry.carriedFlag != null) flagCarry.carriedFlag.ReturnToBase();
+
             if (session.playerObject != null)
                 session.playerObject.Despawn();
 
@@ -145,13 +149,20 @@ public class GameManager : NetworkBehaviour
     {
         if (!playerObject.TryGetComponent(out PlayerHealth health) || !playerObject.TryGetComponent(out PlayerShooter shooter)) return;
 
-        Transform playerTransform = playerObject.transform;
+        // RESET VELOCITY
+        if (playerObject.TryGetComponent(out PlayerController controller))
+            controller.ResetVelocity();
 
+        // SET POSITION
+        Transform playerTransform = playerObject.transform;
         playerTransform.position = position;
         playerTransform.rotation = rotation;
-
+        
+        // RESET STATS
         health.RefillHealth();
         shooter.RefillAmmo();
+
+        // SPAWN
         playerObject.gameObject.SetActive(true);
         if (playerObject.TryGetComponent(out PlayerVisuals visuals)) visuals.SwitchWeapon(0);
     }

@@ -137,7 +137,11 @@ public class PlayerController : NetworkBehaviour
         if (!isOwner && playerCamera != null)
             Destroy(playerCamera.gameObject);
 
-        if (_playerVisuals) _playerVisuals.Init();
+        if (_playerVisuals)
+        {
+            _playerVisuals.Init();
+            _playerVisuals.SetTeam(GetComponent<PlayerTeam>().Team);
+        }
         enabled = isOwner;
     }
 
@@ -267,6 +271,22 @@ public class PlayerController : NetworkBehaviour
         float castDistance = (controller.height / 2f) - sphereRadius + 0.01f + controller.skinWidth;
 
         return Physics.SphereCast(controller.bounds.center, sphereRadius, Vector3.down, out _, castDistance);
+    }
+
+    public void ResetVelocity()
+    {
+        currentVelocity = Vector3.zero;
+        jumpVelocity = Vector3.zero;
+    }
+
+    [ObserversRpc]
+    public void ApplyKnockbackObserverRPC(Vector3 force)
+    {
+        if (isOwner)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            jumpVelocity += force;
+        }
     }
 
     /// <summary>

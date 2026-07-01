@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35135fe2cf8ee0d488d1c6397ecab1b9, type: 3}
   m_Name: Class3
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
-  className: Klasa 3
-  playerPrefab: {fileID: 2798264864666871108, guid: 2508cbaba8275954f9aac97dc93da00b, type: 3}
+  className: Ork
+  playerPrefab: {fileID: 4637806617637856420, guid: cc314335ab17cff4999f803038cbe18f, type: 3}
   maxHealth: 100
