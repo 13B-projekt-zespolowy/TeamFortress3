@@ -39,7 +39,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Camera Settings")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform cameraMimic;
-    [SerializeField] private float cameraSensitivity = 20.0f;
+    [SerializeField] public float cameraSensitivity = 20.0f;
     [SerializeField] private float baseCameraHeight = 0.5f;
     [SerializeField] private float crouchCameraHeight = 0f;
 
