@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProstaMapa_Sprint1_new.unity
     guid: b81033b4a3dcd5485b855bb39ff5862f
+  - enabled: 1
+    path: Assets/Scenes/Main_Scene.unity
+    guid: 39924d87a196d294f8ce84396d73fae1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
