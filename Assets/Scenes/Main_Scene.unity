@@ -473,6 +473,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapFollow
   height: 20
+--- !u!114 &139584695 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3291710549219915847, guid: 084cb0d2b50056c4cac82a89c5033e95, type: 3}
+  m_PrefabInstance: {fileID: 1126937503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1126937507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &139584696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7967233586330292404, guid: 084cb0d2b50056c4cac82a89c5033e95, type: 3}
+  m_PrefabInstance: {fileID: 1126937503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &139584697 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 889417298444760666, guid: 084cb0d2b50056c4cac82a89c5033e95, type: 3}
+  m_PrefabInstance: {fileID: 1126937503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &150925900
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8112,15 +8145,15 @@ PrefabInstance:
     - target: {fileID: 4000790903491470768, guid: 5b708d1afa8124746a8b14ce41227b17, type: 3}
       propertyPath: redText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 139584697}
     - target: {fileID: 4000790903491470768, guid: 5b708d1afa8124746a8b14ce41227b17, type: 3}
       propertyPath: blueText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 139584696}
     - target: {fileID: 4000790903491470768, guid: 5b708d1afa8124746a8b14ce41227b17, type: 3}
       propertyPath: resultText
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 139584695}
     - target: {fileID: 4000790903491470768, guid: 5b708d1afa8124746a8b14ce41227b17, type: 3}
       propertyPath: onGameEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
