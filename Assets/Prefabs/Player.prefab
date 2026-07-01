@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 5599406831872796486}
   - component: {fileID: 4476578527773192704}
   - component: {fileID: 5264849598227974315}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ContactInteractor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

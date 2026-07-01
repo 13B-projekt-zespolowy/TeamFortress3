@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
   className: Krasnolud
   playerPrefab: {fileID: 4637806617637856420, guid: a6c56eb2a5b8c2648b559a72dd2b4aab, type: 3}
-  maxHealth: 100
+  maxHealth: 125

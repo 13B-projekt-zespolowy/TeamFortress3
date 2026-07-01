@@ -72,13 +72,13 @@ public class PlayerController : NetworkBehaviour
     private bool CanUncrouch()
     {
         float fullHeight = 2f;
-        float crouchHeight = 1f;
-        float heightDifference = fullHeight - crouchHeight;
+        Vector3 standingCenter = Vector3.zero;
+        float offset = (fullHeight / 2f) - controller.radius;
 
-        Vector3 bottom = transform.position + controller.center + Vector3.up * (fullHeight / 2f - controller.radius);
-        Vector3 top = transform.position + controller.center + Vector3.up * (fullHeight / 2f + heightDifference - controller.radius);
+        Vector3 bottom = transform.position + standingCenter + (Vector3.down * offset);
+        Vector3 top = transform.position + standingCenter + (Vector3.up * offset);
 
-        return !Physics.CheckCapsule(bottom, top, controller.radius - 0.01f, ~LayerMask.GetMask("Player"));
+        return !Physics.CheckCapsule(bottom, top, controller.radius - 0.05f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
 
     private void Awake()

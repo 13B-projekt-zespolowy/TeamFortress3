@@ -8477,6 +8477,14 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4877317801038814262, guid: c4f005c1fa980c235a799beab7cb9e31, type: 3}
+      propertyPath: walkSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4877317801038814262, guid: c4f005c1fa980c235a799beab7cb9e31, type: 3}
+      propertyPath: crouchSpeed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4877317801038814262, guid: c4f005c1fa980c235a799beab7cb9e31, type: 3}
       propertyPath: baseCameraHeight
       value: 0.75
       objectReference: {fileID: 0}
