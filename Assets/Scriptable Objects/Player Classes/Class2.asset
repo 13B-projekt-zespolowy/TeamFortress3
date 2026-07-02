@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35135fe2cf8ee0d488d1c6397ecab1b9, type: 3}
   m_Name: Class2
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClass
-  className: Klasa 2
-  playerPrefab: {fileID: 3755534366388281010, guid: 1b42cc2a85a1bc340a331ec7ea32971a, type: 3}
-  maxHealth: 100
+  className: Dwarf
+  playerPrefab: {fileID: 4637806617637856420, guid: a6c56eb2a5b8c2648b559a72dd2b4aab, type: 3}
+  maxHealth: 125

@@ -72,13 +72,13 @@ public class PlayerController : NetworkBehaviour
     private bool CanUncrouch()
     {
         float fullHeight = 2f;
-        float crouchHeight = 1f;
-        float heightDifference = fullHeight - crouchHeight;
+        Vector3 standingCenter = Vector3.zero;
+        float offset = (fullHeight / 2f) - controller.radius;
 
-        Vector3 bottom = transform.position + controller.center + Vector3.up * (fullHeight / 2f - controller.radius);
-        Vector3 top = transform.position + controller.center + Vector3.up * (fullHeight / 2f + heightDifference - controller.radius);
+        Vector3 bottom = transform.position + standingCenter + (Vector3.down * offset);
+        Vector3 top = transform.position + standingCenter + (Vector3.up * offset);
 
-        return !Physics.CheckCapsule(bottom, top, controller.radius - 0.01f, ~LayerMask.GetMask("Player"));
+        return !Physics.CheckCapsule(bottom, top, controller.radius - 0.05f, ~LayerMask.GetMask("Player"), QueryTriggerInteraction.Ignore);
     }
 
     private void Awake()
@@ -137,7 +137,11 @@ public class PlayerController : NetworkBehaviour
         if (!isOwner && playerCamera != null)
             Destroy(playerCamera.gameObject);
 
-        if (_playerVisuals) _playerVisuals.Init();
+        if (_playerVisuals)
+        {
+            _playerVisuals.Init();
+            _playerVisuals.SetTeam(GetComponent<PlayerTeam>().Team);
+        }
         enabled = isOwner;
     }
 
@@ -267,6 +271,22 @@ public class PlayerController : NetworkBehaviour
         float castDistance = (controller.height / 2f) - sphereRadius + 0.01f + controller.skinWidth;
 
         return Physics.SphereCast(controller.bounds.center, sphereRadius, Vector3.down, out _, castDistance);
+    }
+
+    public void ResetVelocity()
+    {
+        currentVelocity = Vector3.zero;
+        jumpVelocity = Vector3.zero;
+    }
+
+    [ObserversRpc]
+    public void ApplyKnockbackObserverRPC(Vector3 force)
+    {
+        if (isOwner)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            jumpVelocity += force;
+        }
     }
 
     /// <summary>

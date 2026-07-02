@@ -1,6 +1,7 @@
 using PurrNet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -10,11 +11,25 @@ using UnityEngine;
 public class PlayerVisuals : NetworkBehaviour
 {
     [Serializable]
-    struct WeaponVisuals
+    class WeaponVisuals
     {
+        public Material redTeamMaterial;
+        public Material blueTeamMaterial;
+
         public GameObject worldModel;
         public GameObject viewModel;
+
+        public List<Renderer> weaponRenderers;
+
+        [Header("Effects")]
+        public ParticleSystem worldMuzzleFlash;
+        public ParticleSystem viewModelMuzzleFlash;
     }
+
+    [Header("Team Colors")]
+    [SerializeField] private Material redTeamMaterial;
+    [SerializeField] private Material blueTeamMaterial;
+    [SerializeField] private GameObject[] materialIgnoredObjects;
 
     [Header("Transforms")]
     [SerializeField] private Transform cameraMimicTransform;
@@ -40,11 +55,25 @@ public class PlayerVisuals : NetworkBehaviour
                 part.gameObject.SetActive(!isOwner);
         }
 
-        if(viewmodelParent) viewmodelParent.SetActive(isOwner);
-        SwitchWeapon(0);
+        for (int i = 0; i < weaponVisuals.Count; i++)
+        {
+            WeaponVisuals visual = weaponVisuals[i];
+            if ((visual.weaponRenderers != null && visual.weaponRenderers.Count > 0)) continue;
+            List<Renderer> buffer = new List<Renderer>();
+            visual.weaponRenderers = new List<Renderer>();
+
+            visual.worldModel.GetComponentsInChildren<Renderer>(true, buffer);
+            visual.weaponRenderers.AddRange(buffer);
+
+            visual.viewModel.GetComponentsInChildren<Renderer>(true, buffer);
+            visual.weaponRenderers.AddRange(buffer);
+        }
+
+        if (viewmodelParent) viewmodelParent.SetActive(isOwner);
+        SwitchWeapon(GetComponent<PlayerShooter>().CurrentWeaponIndex);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if(spineTransform)
             spineTransform.localRotation = Quaternion.Euler(cameraMimicTransform.eulerAngles.x, 0f, 0f);
@@ -119,6 +148,32 @@ public class PlayerVisuals : NetworkBehaviour
         playerAnimator.SetTrigger("Jump");
     }
 
+    public void PlayMuzzleFlash(int weaponIndex)
+    {
+        if (weaponIndex < 0 || weaponIndex >= weaponVisuals.Count) return;
+        WeaponVisuals visual = weaponVisuals[weaponIndex];
+
+        if (isOwner && visual.viewModelMuzzleFlash != null)
+            visual.viewModelMuzzleFlash.Play();
+        else if (!isOwner && visual.worldMuzzleFlash != null)
+            visual.worldMuzzleFlash.Play();
+    }
+
+    public void SetAutoAttacking(bool autoAttacking)
+    {
+        if (!isOwner) return;
+
+        if (playerAnimator) playerAnimator.SetBool("AutoAttacking", autoAttacking);
+        if (viewModelAnimator) viewModelAnimator.SetBool("AutoAttacking", autoAttacking);
+    }
+    public void SetRevving(bool revving)
+    {
+        if (!isOwner) return;
+
+        if (playerAnimator) playerAnimator.SetBool("Revving", revving);
+        if (viewModelAnimator) viewModelAnimator.SetBool("Revving", revving);
+    }
+
     /// <summary>
     /// Sets the crouch state on the player animator.
     /// Only executes for the owning client.
@@ -155,5 +210,35 @@ public class PlayerVisuals : NetworkBehaviour
 
         playerAnimator.SetFloat("Forwards", forwards);
         playerAnimator.SetFloat("Sideways", sideways);
+    }
+
+    public void SetTeam(Team team)
+    {
+        Material bodyMaterial = (team == Team.Blue) ? blueTeamMaterial : redTeamMaterial;
+
+        if (bodyMaterial != null)
+        {
+            Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+            ApplyMaterial(renderers, bodyMaterial);
+        }
+
+        for (int i = 0; i < weaponVisuals.Count; i++)
+        {
+            WeaponVisuals visual = weaponVisuals[i];
+            Material weaponMaterial = (team == Team.Blue) ? visual.blueTeamMaterial : visual.redTeamMaterial;
+            if (weaponMaterial == null) continue;
+
+            ApplyMaterial(visual.weaponRenderers.ToArray(), weaponMaterial);
+        }
+    }
+
+    private void ApplyMaterial(Renderer[] renderers, Material mat)
+    {
+        foreach (Renderer rend in renderers)
+        {
+            bool isChild = materialIgnoredObjects.Any((o) => rend.transform.IsChildOf(o.transform));
+            if (!isChild)
+                rend.sharedMaterial = mat;
+        }
     }
 }

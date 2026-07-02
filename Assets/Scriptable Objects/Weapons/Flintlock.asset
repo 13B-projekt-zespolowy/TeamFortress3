@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21954c62248d4a746aa4f1ca8e3cf8f2, type: 3}
+  m_Name: Flintlock
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponInfo
+  weaponName: Flintlock
+  weaponIcon: {fileID: 21300000, guid: 4d91eb29324eb744d8e589df18583a2b, type: 3}
+  viewmodel: {fileID: 0}
+  fireType: 0
+  shootMode: 0
+  magazineSize: 8
+  initialReserve: 24
+  reloadTime: 2
+  fireRate: 1.3
+  damage: 32
+  range: 100
+  spread: 0.01
+  shootSound: {fileID: 0}
+  requiresRevving: 0
+  revUpTime: 1.5
+  meleeRadius: 0.5
+  projectilePrefab: {fileID: 0}

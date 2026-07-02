@@ -11,7 +11,9 @@ public class PlayerHealth : NetworkBehaviour
     /// The current health value synchronized across the network.
     /// </summary>
     public SyncVar<int> currentHealth = new();
-    private int maxHealth;
+    private SyncVar<int> maxHealth = new();
+
+    private PlayerFlagCarry _flagCarry;
 
     /// <summary>
     /// Initializes the player's health to the maximum value.
@@ -21,8 +23,9 @@ public class PlayerHealth : NetworkBehaviour
     public void Initialize(int maxHP)
     {
         if (!isServer) return;
-        maxHealth = maxHP;
-        currentHealth.value = maxHealth;
+        maxHealth.value = maxHP;
+        currentHealth.value = maxHealth.value;
+        _flagCarry = GetComponent<PlayerFlagCarry>();
     }
 
     private void OnEnable()
@@ -79,10 +82,10 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (PlayerInfoUI.Instance != null)
         {
-            if (PlayerInfoUI.Instance.healthBar != null && maxHealth > 0)
-                PlayerInfoUI.Instance.healthBar.maxValue = maxHealth;
+            /*if (PlayerInfoUI.Instance.healthBar != null && maxHealth > 0)
+                PlayerInfoUI.Instance.healthBar.maxValue = maxHealth;*/
 
-            PlayerInfoUI.Instance.UpdateHealthBar(newHealth);
+            PlayerInfoUI.Instance.UpdateHealthBar(newHealth, maxHealth.value);
         }
     }
 
@@ -107,7 +110,7 @@ public class PlayerHealth : NetworkBehaviour
     public void RefillHealth()
     {
         if (!isServer) return;
-        currentHealth.value = maxHealth;
+        currentHealth.value = maxHealth.value;
     }
 
     /// <summary>
@@ -116,7 +119,12 @@ public class PlayerHealth : NetworkBehaviour
     private void Die()
     {
         GameManager.Instance.StartRespawnCountdown((PlayerID)owner);
-        SetActiveRpc(false);
+
+        Flag flag = _flagCarry.carriedFlag;
+        if (flag != null)
+            flag.ReturnToBase();
+
+        SetActiveObserverRPC(false);
     }
 
     /// <summary>
@@ -124,7 +132,7 @@ public class PlayerHealth : NetworkBehaviour
     /// </summary>
     /// <param name="active">Whether the object should be active.</param>
     [ObserversRpc]
-    private void SetActiveRpc(bool active)
+    private void SetActiveObserverRPC(bool active)
     {
         gameObject.SetActive(active);
     }

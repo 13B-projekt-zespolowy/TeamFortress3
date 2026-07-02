@@ -8,6 +8,8 @@ public class PlayerConnection : NetworkBehaviour
 {
     public static PlayerConnection Local;
     private SyncVar<PlayerClass> selectedClass = new();
+    private SyncVar<Team?> selectedTeam = new();
+
 
     public SyncTimer respawnTimer = new();
 
@@ -24,6 +26,21 @@ public class PlayerConnection : NetworkBehaviour
         selectedClass.value = chosenClass;
         GameManager.Instance.SpawnPlayer((PlayerID)owner, this);
     }
+
+    /// <summary>
+    /// Server RPC for switching a team.
+    /// Spawns the player changing team.
+    /// </summary>
+    /// <param name="team">The Team to select.</param>
+    [ServerRpc]
+    public void ChooseTeamServerRpc(Team? team)
+    {
+        selectedTeam.value = team;
+        GameManager.Instance.SpawnPlayer((PlayerID)owner, this);
+    }
+
+
+
 
     protected override void OnSpawned()
     {
@@ -51,6 +68,13 @@ public class PlayerConnection : NetworkBehaviour
     /// </summary>
     /// <returns>The selected PlayerClass, or null if none selected.</returns>
     public PlayerClass GetClass() => selectedClass.value;
+
+    /// <summary>
+    /// Gets the currently selected team.
+    /// </summary>
+    /// <returns>The selected Team, or null if none selected.</returns>
+    public Team? GetSelectedTeam() => selectedTeam.value;
+
 
     /// <summary>
     /// Called when the respawn timer ends. Triggers player respawn.

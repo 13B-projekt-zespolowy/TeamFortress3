@@ -1,5 +1,7 @@
 using PurrNet;
+using System.Net;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -31,6 +33,9 @@ public class PlayerShooter : NetworkBehaviour
     public float swaySmooth = 8f;
     public Vector2 swayMinMax = new Vector2(-6f, 6f);
 
+    [Header("Events")]
+    public UnityEvent<PlayerShooter> onAmmoChanged;
+
     private Quaternion _initialRot;
     private GameObject[] _weaponViewmodels;
     private PlayerVisuals _playerVisuals;
@@ -39,9 +44,12 @@ public class PlayerShooter : NetworkBehaviour
     private SyncVar<int> _activeWeaponIndex = new(0);
     private SyncList<int> _mags = new();
     private SyncList<int> _reserves = new();
-    private float _nextFireTime;
-    private bool _isReloading;
-    private float _reloadEndTime;
+    private float _nextFireTime = 0f;
+    private float _reloadEndTime = 0f;
+    private float _currentRevTime = 0f;
+
+    private bool _isReloading = false;
+    private bool _isRevving = false;
 
     private int _lastMag = -1;
     private int _lastReserve = -1;
@@ -50,6 +58,7 @@ public class PlayerShooter : NetworkBehaviour
     /// Gets the currently equipped weapon information.
     /// </summary>
     public WeaponInfo CurrentWeapon => weaponLoadout.Length > _activeWeaponIndex.value ? weaponLoadout[_activeWeaponIndex.value] : null;
+    public int CurrentWeaponIndex => _activeWeaponIndex.value;
 
     /// <summary>
     /// Gets or sets the current magazine ammo count for the active weapon.
@@ -85,6 +94,8 @@ public class PlayerShooter : NetworkBehaviour
                 _reserves.Add(weaponLoadout[i].initialReserve);
             }
         }
+
+        _mags.onChanged += OnMagsChanged;
 
         if (isOwner)
         {
@@ -155,13 +166,27 @@ public class PlayerShooter : NetworkBehaviour
         if (!isServer && _isReloading && Time.time >= _reloadEndTime)
             _isReloading = false;
 
-        if (!_isReloading)
+        if (!_isReloading && CurrentWeapon != null)
         {
-            if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && fireAction.action.IsPressed()) ||
-                 (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && fireAction.action.WasPressedThisFrame()))
+            bool isFirePressed = fireAction.action.IsPressed();
+            bool wasFirePressed = fireAction.action.WasPressedThisFrame();
+            bool canAutoShoot = isFirePressed && CurrentMag > 0;
+
+            // REVVING
+            if (CurrentWeapon.requiresRevving)
             {
-                TryShoot();
+                SetRevving(isFirePressed);
+                canAutoShoot &= (_currentRevTime >= CurrentWeapon.revUpTime);
             }
+
+            // SHOOTING
+            if ((CurrentWeapon.fireType == WeaponInfo.FireType.Auto && canAutoShoot) ||
+                (CurrentWeapon.fireType == WeaponInfo.FireType.Semi && wasFirePressed))
+                TryShoot();
+        }
+        else if (CurrentWeapon != null && CurrentWeapon.fireType == WeaponInfo.FireType.Auto)
+        {
+            SetRevving(false);
         }
 
         if (reloadAction.action.WasPressedThisFrame())
@@ -243,9 +268,37 @@ public class PlayerShooter : NetworkBehaviour
 
         _nextFireTime = Time.time + (1f / CurrentWeapon.fireRate);
 
-        if (_playerVisuals) _playerVisuals.PlayAttack();
+        if (_playerVisuals && !CurrentWeapon.requiresRevving) 
+            _playerVisuals.PlayAttack();
 
-        ShootServerRPC((CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile) ? firePoint.position : playerCamera.position, playerCamera.forward);
+        // STARTING POSITION & DIRECTION
+        Vector3 startPos;
+        Vector3 shootDirection;
+        if (CurrentWeapon.shootMode == WeaponInfo.ShootMode.Projectile)
+        {
+            startPos = firePoint.position;
+
+            Vector3 targetPoint;
+            if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, CurrentWeapon.range, hitMask, QueryTriggerInteraction.Ignore))
+                targetPoint = hit.point;
+            else
+                targetPoint = playerCamera.position + (playerCamera.forward * CurrentWeapon.range);
+
+            shootDirection = (targetPoint - startPos).normalized;
+        }
+        else
+        {
+            startPos = playerCamera.position;
+            shootDirection = playerCamera.forward;
+        }
+
+        // BULLET SPREAD
+        if (CurrentWeapon.spread > 0f && CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee)
+        {
+            shootDirection += Random.insideUnitSphere * CurrentWeapon.spread;
+            shootDirection.Normalize();
+        }
+        ShootServerRPC(startPos, shootDirection);
     }
 
     /// <summary>
@@ -311,7 +364,8 @@ public class PlayerShooter : NetworkBehaviour
     {
         if (CurrentWeapon == null) return;
         Vector3 endPoint = pos + (forward * CurrentWeapon.range);
-        if (Physics.Raycast(pos, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
+
+        if (Physics.Raycast(pos, forward, out RaycastHit hit, CurrentWeapon.range, hitMask, QueryTriggerInteraction.Ignore))
         {
             endPoint = hit.point;
 
@@ -345,12 +399,15 @@ public class PlayerShooter : NetworkBehaviour
     private void ShootMelee(Vector3 pos, Vector3 forward)
     {
         if (CurrentWeapon == null) return;
-        if (Physics.SphereCast(pos, CurrentWeapon.meleeRadius, forward, out RaycastHit hit, CurrentWeapon.range, hitMask))
+
+        if (Physics.SphereCast(pos, CurrentWeapon.meleeRadius, forward, out RaycastHit hit, CurrentWeapon.range, hitMask, QueryTriggerInteraction.Ignore))
         {
             if (hit.collider.TryGetComponent(out PlayerHealth health) && hit.collider.TryGetComponent(out PlayerTeam targetTeam))
                 if (_playerTeam != null && _playerTeam.Team != targetTeam.Team)
                     health.TakeDamage(CurrentWeapon.damage);
         }
+
+        HitscanDebugObserverRPC(pos, pos+forward*CurrentWeapon.range);
     }
 
     /// <summary>
@@ -367,6 +424,22 @@ public class PlayerShooter : NetworkBehaviour
         viewModelParent.localRotation = Quaternion.Slerp(viewModelParent.localRotation, targetRot, Time.deltaTime * swaySmooth);
     }
 
+    private void SetRevving(bool revving)
+    {
+        if (_isRevving != revving)
+        {
+            _isRevving = revving;
+            if (_playerVisuals) _playerVisuals.SetRevving(revving);
+        }
+        _currentRevTime = (revving) ? _currentRevTime + Time.deltaTime : 0f;
+    }
+
+    private void OnMagsChanged(SyncListChange<int> change)
+    {
+        if(change.operation == SyncListOperation.Set)
+            onAmmoChanged?.Invoke(this);
+    }
+
     [ServerRpc]
     private void ShootServerRPC(Vector3 pos, Vector3 forward)
     {
@@ -375,7 +448,7 @@ public class PlayerShooter : NetworkBehaviour
         if (CurrentWeapon.shootMode != WeaponInfo.ShootMode.Melee)
             CurrentMag--;
 
-        PlayShootSoundObserverRPC();
+        PlayShootEffectsObserverRPC();
 
         switch (CurrentWeapon.shootMode)
         {
@@ -407,14 +480,14 @@ public class PlayerShooter : NetworkBehaviour
     }
 
     [ObserversRpc]
-    private void PlayShootSoundObserverRPC()
+    private void PlayShootEffectsObserverRPC()
     {
         if (CurrentWeapon != null && CurrentWeapon.shootSound != null)
         {
             if (TryGetComponent(out AudioSource playerAudio))
-            {
                 playerAudio.PlayOneShot(CurrentWeapon.shootSound);
-            }
         }
+
+        if (_playerVisuals) _playerVisuals.PlayMuzzleFlash(_activeWeaponIndex.value);
     }
 }
