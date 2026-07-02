@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System;
+using PurrNet;
 
 /// <summary>
 /// Manages the pause menu functionality including opening, closing, settings, and input mode switching.
@@ -161,6 +162,8 @@ public class PauseMenuController : MonoBehaviour
     /// </summary>
     public void QuitToMenu()
     {
+        var manager = GameObject.Find("Network Manager").GetComponent<NetworkManager>();
+        manager.StopClient();
         SceneManager.LoadScene("Lobby");
     }
 
