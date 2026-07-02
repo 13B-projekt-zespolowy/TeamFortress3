@@ -44,4 +44,9 @@ public class PlayerFlagCarry : NetworkBehaviour
         carriedFlag.Drop(transform.position);
         carriedFlag = null;
     }
+
+    protected override void OnDespawned()
+    {
+        Drop();
+    }
 }
