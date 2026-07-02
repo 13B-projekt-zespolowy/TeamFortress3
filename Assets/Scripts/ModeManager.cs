@@ -8,6 +8,8 @@ using TMPro;
 /// </summary>
 public class ModeManager : NetworkBehaviour
 {
+    [SerializeField] private int minPlayerCount = 1;
+
     public static ModeManager Instance { get; private set; }
 
     private SyncVar<int> redScore = new();
@@ -19,6 +21,7 @@ public class ModeManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI resultText;
 
     private GameTimer timer;
+    private GameManager gameManager;
 
     private void Awake()
     {
@@ -35,6 +38,21 @@ public class ModeManager : NetworkBehaviour
     private void Start()
     {
         timer = FindAnyObjectByType<GameTimer>();
+        gameManager = FindAnyObjectByType<GameManager>();
+        gameManager.OnPlayerSpawned += OnPlayerSpawned;
+    }
+
+    private void OnPlayerSpawned()
+    {
+        if (!isServer)
+            return;
+
+        if (!timer.IsRunning)
+        {
+            var playerCount = gameManager.GetPlayerCountByTeam();
+            if (playerCount.Blue >= minPlayerCount && playerCount.Red >= minPlayerCount)
+                timer.StartTimer();
+        }
     }
 
     /// <summary>

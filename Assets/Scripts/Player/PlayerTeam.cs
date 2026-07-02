@@ -28,3 +28,9 @@ public class PlayerTeam : NetworkBehaviour
         team.value = assignedTeam;
     }
 }
+
+public struct PlayerCountByTeam
+{
+    public int Red;
+    public int Blue;
+}
