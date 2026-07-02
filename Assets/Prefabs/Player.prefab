@@ -527,6 +527,7 @@ GameObject:
   - component: {fileID: 8225231554379536593}
   - component: {fileID: 2871207413334374826}
   - component: {fileID: -6057844475691910031}
+  - component: {fileID: -3358237795766195698}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -730,9 +731,9 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   playerCamera: {fileID: 7657819142339139072}
   weaponLoadout:
-  - {fileID: 11400000, guid: a4105fccdf89ba04d814be92cd152378, type: 2}
-  - {fileID: 11400000, guid: 844357175adeb1e4cbc1629d79197cfb, type: 2}
-  - {fileID: 11400000, guid: 28328f8f3ba46474db5445fa9946064f, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   fireAction: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   reloadAction: {fileID: 4989642796918323089, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -822,3 +823,24 @@ MonoBehaviour:
     _value: 1
     _ownerAuth: 0
     _sendIntervalInSeconds: 0
+--- !u!114 &-3358237795766195698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8958957543670348631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df3a150574a4cd4a99972293a5cb114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMinimapFollow
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}

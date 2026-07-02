@@ -624,29 +624,8 @@ PrefabInstance:
     - {fileID: 3558081405170965538, guid: 03cc475117df16c4398981b3e31b44af, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5398532200910574314, guid: 03cc475117df16c4398981b3e31b44af, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 90705364}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03cc475117df16c4398981b3e31b44af, type: 3}
---- !u!1 &90705363 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5398532200910574314, guid: 03cc475117df16c4398981b3e31b44af, type: 3}
-  m_PrefabInstance: {fileID: 90705362}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &90705364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 90705363}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35985502d19d9fb22bb96ec944a65607, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MinimapFollow
-  height: 20
 --- !u!1001 &125616903
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5188,6 +5167,10 @@ PrefabInstance:
       propertyPath: m_Texture
       value: 
       objectReference: {fileID: 8400000, guid: 4b89feed6c4a2be4f99bb1030e6ebda7, type: 2}
+    - target: {fileID: 4729016278692944246, guid: 084cb0d2b50056c4cac82a89c5033e95, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -49.80005
+      objectReference: {fileID: 0}
     - target: {fileID: 4962472533523484919, guid: 084cb0d2b50056c4cac82a89c5033e95, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6135,8 +6118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b0880b4f323b740a22ad94cbb767c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlagBase
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -6144,6 +6125,8 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   team: 1
 --- !u!65 &1295860584
 BoxCollider:
@@ -7134,8 +7117,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b0880b4f323b740a22ad94cbb767c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlagBase
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -7143,6 +7124,8 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   team: 0
 --- !u!65 &1529963348
 BoxCollider:
@@ -8011,8 +7994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fada1ad2140ea9e4697cfef47154a199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
   _isSetup: 0
   _prefabId: -2147483648
   _componentIndex: -2147483648
@@ -8020,6 +8001,8 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
   currentHealth:
     _value: 0
     _ownerAuth: 0

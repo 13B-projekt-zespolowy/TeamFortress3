@@ -39,9 +39,6 @@ public class PlayerConnection : NetworkBehaviour
         GameManager.Instance.SpawnPlayer((PlayerID)owner, this);
     }
 
-
-
-
     protected override void OnSpawned()
     {
         if (isOwner)

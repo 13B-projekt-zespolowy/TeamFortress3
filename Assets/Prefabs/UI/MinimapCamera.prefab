@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4097100945506894428}
   - component: {fileID: 5810323017722510844}
   - component: {fileID: 7746605677171269151}
-  - component: {fileID: 3558081405170965538}
+  - component: {fileID: 1593695801731976652}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -129,7 +129,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &3558081405170965538
+--- !u!114 &1593695801731976652
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5398532200910574314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9de42b0bcd021404f880044e674354b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 35985502d19d9fb22bb96ec944a65607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapFollow
   height: 20
