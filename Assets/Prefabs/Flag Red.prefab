@@ -48,10 +48,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2006974700008907442, guid: 4381c71ecc98b9b458164e710ca68e13, type: 3}
+    - target: {fileID: 1242360292931643525, guid: 4381c71ecc98b9b458164e710ca68e13, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: c71d7af6e7081a74b90c72dcc3e64cdc, type: 2}
+      objectReference: {fileID: 2100000, guid: a2bf6f0b46c7420fcbb4ec3e834968ca, type: 2}
     - target: {fileID: 8033315109626637286, guid: 4381c71ecc98b9b458164e710ca68e13, type: 3}
       propertyPath: m_Name
       value: Flag Red
