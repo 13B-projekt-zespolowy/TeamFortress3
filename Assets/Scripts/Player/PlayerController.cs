@@ -32,7 +32,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.15f;
 
-    [SerializeField] private float globalSpeedScale = 2.0f;
+    [SerializeField] private float globalSpeedScale = 1.6f;
 
     private float coyoteTimer = 0f;
     private float jumpBufferTimer = 0f;
