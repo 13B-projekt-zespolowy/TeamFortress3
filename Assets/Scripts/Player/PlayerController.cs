@@ -32,6 +32,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.15f;
 
+    [SerializeField] private float globalSpeedScale = 2.0f;
+
     private float coyoteTimer = 0f;
     private float jumpBufferTimer = 0f;
     private bool pendingJump;
@@ -227,7 +229,7 @@ public class PlayerController : NetworkBehaviour
 
         float movementSpeed = movementType == MovementType.Crouching ? crouchSpeed : walkSpeed;
 
-        Vector3 targetVelocity = walkMotion * movementSpeed;
+        Vector3 targetVelocity = walkMotion * movementSpeed * globalSpeedScale;
 
         float dot = Vector3.Dot(currentVelocity.normalized, targetVelocity.normalized);
         float directionMultiplier = dot < 0 ? directionChangeMultiplier : 1f;
