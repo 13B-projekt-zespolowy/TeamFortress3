@@ -151,7 +151,7 @@ public class PauseMenuController : MonoBehaviour
     /// </summary>
     public void QuitToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Lobby");
     }
 
     /// <summary>
