@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -17,9 +18,11 @@ public class LiquidWobble : MonoBehaviour
     [SerializeField] private float verticalWeight = 0.2f;
 
     [Header("References")]
-    [SerializeField] private Renderer rend;
+    //[SerializeField] private Renderer rend;
+    [SerializeField] private Transform liquidsParent;
 
-    private MaterialPropertyBlock propertyBlock;
+    //private MaterialPropertyBlock propertyBlock;
+    private Dictionary<Renderer, MaterialPropertyBlock> _propertyBlocks = new Dictionary<Renderer, MaterialPropertyBlock>();
     private Vector3 lastPos;
     private Quaternion lastRot;
 
@@ -28,21 +31,28 @@ public class LiquidWobble : MonoBehaviour
     private float sloshVariance;
     private float pulse;
 
+    private float _fillAmount = 1f;
+
     private static readonly int WobbleXId = Shader.PropertyToID("_WobbleX");
     private static readonly int WobbleZId = Shader.PropertyToID("_WobbleZ");
     private static readonly int RandomOffsetId = Shader.PropertyToID("_RandomOffset");
+    private static readonly int FillAmountId = Shader.PropertyToID("_FillAmount");
 
     void Start()
     {
-        if (rend == null)
-            rend = GetComponent<Renderer>();
+        _fillAmount = 1f;
 
-        propertyBlock = new MaterialPropertyBlock();
-        rend.GetPropertyBlock(propertyBlock);
+        Renderer[] renderers = liquidsParent.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(propBlock);
 
-        sloshVariance = Random.Range(0.4f, 1f);
-        propertyBlock.SetFloat(RandomOffsetId, sloshVariance * 20f);
-        Debug.Log(sloshVariance + " || " + propertyBlock.GetFloat(RandomOffsetId));
+            _propertyBlocks.Add(renderer, propBlock);
+
+            sloshVariance = Random.Range(0.4f, 1f);
+            propBlock.SetFloat(RandomOffsetId, sloshVariance * 20f);
+        }
     }
 
     void LateUpdate()
@@ -74,9 +84,16 @@ public class LiquidWobble : MonoBehaviour
         float sineWave = Mathf.Sin(pulse);
 
         // APPLY FINAL VALUES
-        propertyBlock.SetFloat(WobbleXId, wobbleAmountToAddX * sineWave * sloshVariance);
-        propertyBlock.SetFloat(WobbleZId, wobbleAmountToAddZ * sineWave * sloshVariance);
-        rend.SetPropertyBlock(propertyBlock);
+        foreach (KeyValuePair<Renderer, MaterialPropertyBlock> kv in _propertyBlocks)
+        {
+            Renderer rend = kv.Key;
+            MaterialPropertyBlock propBlock = kv.Value;
+
+            propBlock.SetFloat(WobbleXId, wobbleAmountToAddX * sineWave * sloshVariance);
+            propBlock.SetFloat(WobbleZId, wobbleAmountToAddZ * sineWave * sloshVariance);
+            propBlock.SetFloat(FillAmountId, _fillAmount);
+            rend.SetPropertyBlock(propBlock);
+        }
 
 
         // SAVE POSITION AND ROTATION
@@ -102,4 +119,6 @@ public class LiquidWobble : MonoBehaviour
 
         return axis * angle * Mathf.Deg2Rad / deltaTime;
     }
+
+    public void SetFillAmount(float value) => _fillAmount = Mathf.Clamp01(value);
 }

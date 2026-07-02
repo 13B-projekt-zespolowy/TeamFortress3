@@ -1,0 +1,297 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: HumanUpperMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: armor
+    m_Weight: 0
+  - m_Path: belts
+    m_Weight: 0
+  - m_Path: boot_arrmot
+    m_Weight: 0
+  - m_Path: boots
+    m_Weight: 0
+  - m_Path: head
+    m_Weight: 0
+  - m_Path: Human
+    m_Weight: 0
+  - m_Path: Human/crossbow_line_driver
+    m_Weight: 0
+  - m_Path: Human/crossbow_line_driver/crossbow_line_driver_end
+    m_Weight: 0
+  - m_Path: Human/footIK.L
+    m_Weight: 0
+  - m_Path: Human/footIK.L/foot.L
+    m_Weight: 0
+  - m_Path: Human/footIK.L/foot.L/heel.02.L
+    m_Weight: 0
+  - m_Path: Human/footIK.L/foot.L/heel.02.L/heel.02.L_end
+    m_Weight: 0
+  - m_Path: Human/footIK.L/foot.L/toe.L
+    m_Weight: 0
+  - m_Path: Human/footIK.L/foot.L/toe.L/toe.L_end
+    m_Weight: 0
+  - m_Path: Human/footIK.R
+    m_Weight: 0
+  - m_Path: Human/footIK.R/foot.R
+    m_Weight: 0
+  - m_Path: Human/footIK.R/foot.R/heel.02.R
+    m_Weight: 0
+  - m_Path: Human/footIK.R/foot.R/heel.02.R/heel.02.R_end
+    m_Weight: 0
+  - m_Path: Human/footIK.R/foot.R/toe.R
+    m_Weight: 0
+  - m_Path: Human/footIK.R/foot.R/toe.R/toe.R_end
+    m_Weight: 0
+  - m_Path: Human/kneeIK.L
+    m_Weight: 0
+  - m_Path: Human/kneeIK.L/kneeIK.L_end
+    m_Weight: 0
+  - m_Path: Human/kneeIK.R
+    m_Weight: 0
+  - m_Path: Human/kneeIK.R/kneeIK.R_end
+    m_Weight: 0
+  - m_Path: Human/spine
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.L
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.L/thigh.L
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.L/thigh.L/shin.L
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.L/thigh.L/shin.L/shin.L_end
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.R
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.R/thigh.R
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.R/thigh.R/shin.R
+    m_Weight: 0
+  - m_Path: Human/spine/pelvis.R/thigh.R/shin.R/shin.R_end
+    m_Weight: 0
+  - m_Path: Human/spine/spine.001
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/elbowIK.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/elbowIK.L/elbowIK.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/elbowIK.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/elbowIK.R/elbowIK.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/arm
+      guard left
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/forearm.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/arm
+      guard right
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/forearm.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Beard
+      lp
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Eyes
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/face_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Feather2
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Feather2.001
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Helmet
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/spine.002/spine.003/spine.004/spine.005/face/Mustache
+      lp
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/mag_bone
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/mag_bone/mag_bone_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/mag_bone/reload_mag
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/f_index.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/f_index.01.L/f_index.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/f_index.01.L/f_index.02.L/f_index.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/f_index.01.L/f_index.02.L/f_index.03.L/f_index.03.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/thumb.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/thumb.01.L/thumb.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/thumb.01.L/thumb.02.L/thumb.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.01.L/thumb.01.L/thumb.02.L/thumb.03.L/thumb.03.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.02.L/f_middle.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.02.L/f_middle.01.L/f_middle.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.02.L/f_middle.01.L/f_middle.02.L/f_middle.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.02.L/f_middle.01.L/f_middle.02.L/f_middle.03.L/f_middle.03.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.03.L/f_ring.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.03.L/f_ring.01.L/f_ring.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.03.L/f_ring.01.L/f_ring.02.L/f_ring.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.03.L/f_ring.01.L/f_ring.02.L/f_ring.03.L/f_ring.03.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.04.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.04.L/f_pinky.01.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.04.L/f_pinky.01.L/f_pinky.02.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.04.L/f_pinky.01.L/f_pinky.02.L/f_pinky.03.L
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.L/hand.L/palm.04.L/f_pinky.01.L/f_pinky.02.L/f_pinky.03.L/f_pinky.03.L_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/f_index.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/f_index.01.R/f_index.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/f_index.01.R/f_index.02.R/f_index.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/f_index.01.R/f_index.02.R/f_index.03.R/f_index.03.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/thumb.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/thumb.01.R/thumb.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/thumb.01.R/thumb.02.R/thumb.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.01.R/thumb.01.R/thumb.02.R/thumb.03.R/thumb.03.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.02.R/f_middle.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.02.R/f_middle.01.R/f_middle.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.02.R/f_middle.01.R/f_middle.02.R/f_middle.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.02.R/f_middle.01.R/f_middle.02.R/f_middle.03.R/f_middle.03.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.03.R/f_ring.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.03.R/f_ring.01.R/f_ring.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.03.R/f_ring.01.R/f_ring.02.R/f_ring.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.03.R/f_ring.01.R/f_ring.02.R/f_ring.03.R/f_ring.03.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.04.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.04.R/f_pinky.01.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.04.R/f_pinky.01.R/f_pinky.02.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.04.R/f_pinky.01.R/f_pinky.02.R/f_pinky.03.R
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/palm.04.R/f_pinky.01.R/f_pinky.02.R/f_pinky.03.R/f_pinky.03.R_end
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/Cylinder.001
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.002
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.003
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.004
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.005
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.006
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.007
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.008
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.009
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.010
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.011
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.012
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Crossbow/mag/Cylinder.013
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/Sword
+    m_Weight: 1
+  - m_Path: Human/spine/spine.001/wristIK.R/hand.R/weapon_bone/weapon_bone_end
+    m_Weight: 1
+  - m_Path: Human/trigger_driver
+    m_Weight: 0
+  - m_Path: Human/trigger_driver/trigger_driver_end
+    m_Weight: 0
+  - m_Path: kneeguards
+    m_Weight: 0
+  - m_Path: neck guard
+    m_Weight: 0
+  - m_Path: pants
+    m_Weight: 0
+  - m_Path: shirt
+    m_Weight: 0
+  - m_Path: socks
+    m_Weight: 0

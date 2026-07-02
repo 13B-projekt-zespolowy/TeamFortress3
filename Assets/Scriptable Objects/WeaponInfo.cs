@@ -22,8 +22,12 @@ public class WeaponInfo : ScriptableObject
     public float fireRate = 10f;
     public int damage = 20;
     public float range = 100f;
+    public float spread = 0.01f;
     public AudioClip shootSound;
-    //public float spread = 0.01f; //TO DO
+
+    [Header("Revving")]
+    public bool requiresRevving = false;
+    public float revUpTime = 1.5f;
 
     [Header("Melee")]
     public float meleeRadius = 0.5f;

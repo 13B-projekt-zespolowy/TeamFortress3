@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7001496143503653758}
   - component: {fileID: 8034080068044220621}
   - component: {fileID: 6572534255177094022}
+  - component: {fileID: 1571084314531223015}
   m_Layer: 5
   m_Name: SwitchManager
   m_TagString: Untagged
@@ -49,16 +50,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deb8373eabf46364ea2c940f1098e1dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitchUI
-  cardPrefab: {fileID: 3752124204988903657, guid: a3ac6a652cf18b34b9e4bb3dfaa05ddc, type: 3}
-  canvasGroup: {fileID: 6572534255177094022}
-  switchWeapon1: {fileID: 0}
-  switchWeapon2: {fileID: 0}
-  displayDuration: 2
-  fadeSpeed: 5
+  statsPanel: {fileID: 0}
+  ammoPanel: {fileID: 0}
   crosshairObject: {fileID: 0}
   ammoIconImage: {fileID: 0}
+  ammoText: {fileID: 0}
   rangedSprite: {fileID: 21300000, guid: 32e91a989e182e74f8650e2303ea4bbb, type: 3}
-  meleeSprite: {fileID: 21300000, guid: 4aa5df2b11af81b4697d7db20418cb25, type: 3}
+  meleeSprite: {fileID: 21300000, guid: 454bb6ea17a2a8d40b17478d05128f03, type: 3}
+  cardPrefab: {fileID: 3752124204988903657, guid: a3ac6a652cf18b34b9e4bb3dfaa05ddc, type: 3}
+  canvasGroup: {fileID: 6572534255177094022}
+  displayDuration: 2
+  fadeSpeed: 5
 --- !u!225 &6572534255177094022
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -71,3 +73,29 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1571084314531223015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6332962527551432548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 10
+    m_Bottom: 0
+  m_ChildAlignment: 2
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
