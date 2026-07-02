@@ -7,24 +7,14 @@ using UnityEngine;
 public class MinimapFollow : MonoBehaviour
 {
     public float height = 20f;
-    private Transform player;
+    public Transform target = null;
 
     private void LateUpdate()
     {
-        if (player == null)
+        if (target != null)
         {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-            {
-                player = playerObj.transform;
-            }
-            else
-            {
-                return;
-            }
+            transform.position = new Vector3(target.position.x, target.position.y + height, target.position.z);
+            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         }
-
-        transform.position = new Vector3(player.position.x, player.position.y + height, player.position.z);
-        transform.rotation = Quaternion.Euler(90f, 0f, 0f);
     }
 }
