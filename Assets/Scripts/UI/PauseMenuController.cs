@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using System;
 
 /// <summary>
 /// Manages the pause menu functionality including opening, closing, settings, and input mode switching.
@@ -14,6 +16,12 @@ public class PauseMenuController : MonoBehaviour
     [Header("UI Panels")]
     public GameObject pauseMenuPanel;
     public GameObject settingsPanel;
+    public GameObject classSelectUI;
+
+
+    [Header("Player state switch buttons")]
+    public Button[] switchButtons;
+
 
     [Header("Gameplay Elements To Dim")]
     public GameObject[] gameplayUIElements;
@@ -155,12 +163,51 @@ public class PauseMenuController : MonoBehaviour
     }
 
     /// <summary>
+    /// Changes the team the player is currently on
     /// </summary>
-    public void ChangeTeam() { Debug.Log("Changing team."); }
+    public void ChangeTeam()
+    {
+        if (!PlayerConnection.Local) return;
+        var currentTeam = PlayerConnection.Local.GetSelectedTeam();
+        if (currentTeam == null)
+        {
+            // defaults to switching to red first always. 
+            // I don't know a good way to get the current team
+            currentTeam = Team.Red;
+        }
+        PlayerConnection.Local.ChooseTeamServerRpc(currentTeam == Team.Red ? Team.Blue : Team.Red);
+        DisableSwitchButtons();
+    }
 
     /// <summary>
+    /// Opens the class selection screen for the player
     /// </summary>
-    public void ChangeClass() { Debug.Log("Changing class."); }
+    public void ChangeClass() { 
+        Debug.Log("Changing class.");
+        classSelectUI.SetActive(true);
+        pauseMenuPanel.SetActive(false);
+        InputManager.Instance.UiModeLock = true;
+        DisableSwitchButtons();
+    }
+
+    private void DisableSwitchButtons()
+    {
+        foreach(Button but in switchButtons)
+        {
+            but.interactable = false;
+        }
+
+        Invoke(nameof(EnableSwitchButtons), 10.0f);
+    }
+    private void EnableSwitchButtons()
+    {
+        foreach(Button but in switchButtons)
+        {
+            but.interactable = true;
+        }
+    }
+
+
 
     /// <summary>
     /// </summary>
