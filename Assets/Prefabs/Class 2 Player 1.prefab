@@ -3185,7 +3185,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 709c8d70da1980c71ac1206debf6dc97, type: 3}
+  - {fileID: 2100000, guid: fdd49af96aa131f44887248fdd26db38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8809,6 +8809,7 @@ MonoBehaviour:
   materialIgnoredObjects:
   - {fileID: 1427249160308992701}
   - {fileID: 2610991816094591611}
+  - {fileID: 3464309157742640489}
   cameraMimicTransform: {fileID: 8683205359772210139}
   spineTransform: {fileID: 1648478098917446113}
   playerVisuals: {fileID: 7143642642541273912}
