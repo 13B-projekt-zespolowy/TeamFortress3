@@ -1,6 +1,8 @@
+using System;
 using PurrNet;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Manages the core game logic including player spawning, respawning, team balancing, and session management.
@@ -17,6 +19,8 @@ public class GameManager : NetworkBehaviour
 
     public static GameManager Instance;
     private Dictionary<PlayerID, PlayerSession> sessions = new();
+
+    public event Action OnPlayerSpawned;
 
     private void Awake()
     {
@@ -78,6 +82,8 @@ public class GameManager : NetworkBehaviour
             if (obj.TryGetComponent(out PlayerHealth health))
                 health.Initialize(playerClass.maxHealth);
         }
+
+        OnPlayerSpawned?.Invoke();
     }
 
     /// <summary>
@@ -136,6 +142,28 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    public PlayerCountByTeam GetPlayerCountByTeam()
+    {
+        var result = new PlayerCountByTeam()
+        {
+            Blue = 0,
+            Red = 0,
+        };
+
+        foreach (var session in sessions.Values)
+        {
+            if (session.playerObject != null && session.playerObject.TryGetComponent(out PlayerTeam pt))
+            {
+                if (pt.Team == Team.Red) 
+                    result.Red++;
+                else 
+                    result.Blue++;
+            }
+        }
+
+        return result;
+    }
+
     /// <summary>
     /// Gets the scene camera GameObject.
     /// </summary>
@@ -178,18 +206,8 @@ public class GameManager : NetworkBehaviour
     /// <returns>The team with fewer active players.</returns>
     private Team GetBalancedTeam()
     {
-        int red = 0, blue = 0;
-        foreach (var session in sessions.Values)
-        {
-            if (session.playerObject != null && session.playerObject.TryGetComponent(out PlayerTeam pt))
-            {
-                if (pt.Team == Team.Red) 
-                    red++;
-                else 
-                    blue++;
-            }
-        }
-        return red <= blue ? Team.Red : Team.Blue;
+        var count = GetPlayerCountByTeam();
+        return count.Red <= count.Blue ? Team.Red : Team.Blue;
     }
 
     /// <summary>

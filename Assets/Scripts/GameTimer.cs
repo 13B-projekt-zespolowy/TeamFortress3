@@ -12,12 +12,14 @@ public class GameTimer : NetworkBehaviour
     [Header("Timer settings")]
     [SerializeField] private SyncVar<float> timeRemaining = new(300.0f);
 
-    [SerializeField] private bool timerIsRunning = true;
+    [SerializeField] private SyncVar<bool> timerIsRunning = new();
 
     /// <summary>
     /// Gets the current remaining time on the timer.
     /// </summary>
     public float TimeRemaining => timeRemaining;
+
+    public bool IsRunning => timerIsRunning;
 
     /// <summary>
     /// Event invoked when the timer reaches zero.
@@ -29,11 +31,7 @@ public class GameTimer : NetworkBehaviour
     private void Start()
     {
         modeManager = FindAnyObjectByType<ModeManager>();
-
-        if (!isServer)
-            return;
-
-        timerIsRunning = true;
+        timerIsRunning.value = false;
     }
 
     private void FixedUpdate()
@@ -71,7 +69,20 @@ public class GameTimer : NetworkBehaviour
     }
 
     /// <summary>
-    /// Stops the timer from counting down.
+    /// Starts the timer.
+    /// Server-only operation.
+    /// </summary>
+    [ServerRpc]
+    public void StartTimer()
+    {
+        if (!isServer)
+            return;
+
+        timerIsRunning.value = true;
+    }
+
+    /// <summary>
+    /// Stops the timer.
     /// Server-only operation.
     /// </summary>
     [ServerRpc]
@@ -80,6 +91,6 @@ public class GameTimer : NetworkBehaviour
         if (!isServer)
             return;
 
-        timerIsRunning = false;
+        timerIsRunning.value = false;
     }
 }
