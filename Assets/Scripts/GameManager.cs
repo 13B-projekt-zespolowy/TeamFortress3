@@ -42,6 +42,11 @@ public class GameManager : NetworkBehaviour
 
         if (session.playerObject != null)
         {
+            var flagCarry = session.playerObject.GetComponent<PlayerFlagCarry>();
+            if (flagCarry.carriedFlag)
+            {
+                flagCarry.carriedFlag.transform.SetParent(null);
+            }
             session.playerObject.Despawn();
             session.playerObject = null;
         }
