@@ -19,7 +19,9 @@ public class PauseMenuController : MonoBehaviour
     public GameObject classSelectUI;
 
 
-    [Header("Player state switch buttons")]
+
+    [Header("Player state switch settings")]
+    public float switchButtonCooldown = 10.0f;
     public Button[] switchButtons;
 
 
@@ -197,7 +199,7 @@ public class PauseMenuController : MonoBehaviour
             but.interactable = false;
         }
 
-        Invoke(nameof(EnableSwitchButtons), 10.0f);
+        Invoke(nameof(EnableSwitchButtons), switchButtonCooldown);
     }
     private void EnableSwitchButtons()
     {
