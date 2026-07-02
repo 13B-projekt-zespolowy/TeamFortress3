@@ -52,7 +52,7 @@ public class GameTimer : NetworkBehaviour
         {
             timeRemaining.value = 0;
             StopTimer();
-            modeManager.EndDraw();
+            modeManager.EndTimeout();
         }
     }
 

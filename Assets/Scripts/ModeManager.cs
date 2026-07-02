@@ -83,6 +83,26 @@ public class ModeManager : NetworkBehaviour
     }
 
     /// <summary>
+    /// Ends the match when the time runs out. Selects score based on team points.
+    /// </summary>
+    public void EndTimeout()
+    {
+        if (redScore > blueScore)
+        {
+            EndWin(Team.Red);
+        }
+        else if (blueScore > redScore)
+        {
+            EndWin(Team.Blue);
+        }
+        else
+        {
+            EndDraw();
+        }
+    }
+
+
+    /// <summary>
     /// RPC that displays the result text to all clients.
     /// </summary>
     /// <param name="text">The text to display.</param>
