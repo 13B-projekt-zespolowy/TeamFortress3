@@ -49,7 +49,7 @@ public class GameManager : NetworkBehaviour
         PlayerClass playerClass = session.connection.GetClass();
         if (playerClass == null || playerClass.playerPrefab == null) return;
 
-        Team assignedTeam = GetBalancedTeam();
+        Team assignedTeam = session.connection.GetSelectedTeam() ?? GetBalancedTeam();
 
         Transform spawnPoint = GetSpawnPoint(assignedTeam);
         Vector3 spawnPos = (spawnPoint) ? spawnPoint.position : Vector3.zero;
