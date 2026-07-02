@@ -21,7 +21,6 @@ public class ModeManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI resultText;
 
     private GameTimer timer;
-    private GameManager gameManager;
 
     private void Awake()
     {
@@ -38,8 +37,7 @@ public class ModeManager : NetworkBehaviour
     private void Start()
     {
         timer = FindAnyObjectByType<GameTimer>();
-        gameManager = FindAnyObjectByType<GameManager>();
-        gameManager.OnPlayerSpawned += OnPlayerSpawned;
+        GameManager.Instance.OnPlayerSpawned += OnPlayerSpawned;
     }
 
     private void OnPlayerSpawned()
@@ -49,7 +47,7 @@ public class ModeManager : NetworkBehaviour
 
         if (!timer.IsRunning)
         {
-            var playerCount = gameManager.GetPlayerCountByTeam();
+            var playerCount = GameManager.Instance.GetPlayerCountByTeam();
             if (playerCount.Blue >= minPlayerCount && playerCount.Red >= minPlayerCount)
                 timer.StartTimer();
         }
