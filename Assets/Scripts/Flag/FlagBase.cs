@@ -28,7 +28,7 @@ public class FlagBase : NetworkBehaviour
 
             if (flag != null && flag.Team != team)
             {
-                ModeManager.Instance.IncreaseScore(flag.Team);
+                ModeManager.Instance.IncreaseScore(team);
                 flag.ReturnToBase();
             }
         }
