@@ -10,6 +10,7 @@ public class Flag : NetworkBehaviour
 {
     [SerializeField] private Team team;
     [SerializeField] private Transform basePosition;
+    [SerializeField] private GameTimer gameTimer;
 
     private PlayerFlagCarry carrier;
 
@@ -83,6 +84,8 @@ public class Flag : NetworkBehaviour
     {
         if (!isServer)
             return;
+
+        if (!gameTimer.IsRunning) return;
 
         if (other.CompareTag("Player"))
         {

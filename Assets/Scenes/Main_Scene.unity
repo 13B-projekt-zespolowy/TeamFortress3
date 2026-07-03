@@ -7214,6 +7214,10 @@ PrefabInstance:
       value: Flag Blue
       objectReference: {fileID: 0}
     - target: {fileID: 6427873476755972647, guid: 0817b3a0ef1b8de4998483514e317492, type: 3}
+      propertyPath: gameTimer
+      value: 
+      objectReference: {fileID: 477482789}
+    - target: {fileID: 6427873476755972647, guid: 0817b3a0ef1b8de4998483514e317492, type: 3}
       propertyPath: basePosition
       value: 
       objectReference: {fileID: 183326352}
@@ -8474,6 +8478,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flag Red
       objectReference: {fileID: 0}
+    - target: {fileID: 4703201797560987599, guid: 4685a2f170b947242af1470a1a10bf12, type: 3}
+      propertyPath: gameTimer
+      value: 
+      objectReference: {fileID: 477482789}
     - target: {fileID: 4703201797560987599, guid: 4685a2f170b947242af1470a1a10bf12, type: 3}
       propertyPath: basePosition
       value: 
